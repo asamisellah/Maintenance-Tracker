@@ -1,1 +1,1 @@
-# hicare-tracker
+# HiCare Tracker
