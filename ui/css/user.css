@@ -7,7 +7,6 @@
 .container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   z-index: -2;
   background-color: var(--secondary-color);
 }
@@ -27,59 +26,33 @@ header {
   background-color: var(--primary-color);
 }
 
-.nav {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  align-items: center;
-  color: var(--text-color);
-  font-size: 1.5rem;
-  margin: 1rem;
-}
-
-.nav--search-input {
-  background-color: var(--text-color);
-  border-radius: 1.5rem;
-  height: 3rem;
-  width: 30rem;
-  padding: 0 1.8rem;
-}
-
-form button {
-  background-color: inherit;
-  border-style: none;
-}
-
-.nav--icon {
-  height: 2rem;
-  width: 3.5rem;
-  fill: var(--text-color);
-}
-
-.nav--icon-primary {
-  height: 2rem;
-  width: 3.5rem;
-  fill: var(--primary-color);
-}
-
 .main {
   width: 100%;
-  justify-content: center;
 }
 
-content {
+.content {
   flex-direction: column;
+  width: 80%;
+}
+
+.title{
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 3rem;
+  
+}
+
+.stats{
+  justify-content: flex-end;
+  flex-flow: wrap;
 }
 
 footer {
   background-color: inherit;
-  position: fixed;
-  left: 0;
-  bottom: 0;
   width: 100%;
 }
 
 footer .nav {
-  margin: 1rem 0;
+  margin: rem 0;
   color: var(--primary-color);
 }

@@ -1,7 +1,6 @@
 /* Imports */
 @import url("main.css");
 
-
 /* --------------------------------------------------------------
     # User sign in and sign Up page css
 -----------------------------------------------------------------*/
@@ -60,7 +59,7 @@
   opacity: 0.8;
 }
 :-ms-input-placeholder {
-  /* Internet Explorer 10-11 */
+  /* Internet Explorer */
   color: var(--text-color);
 }
 ::-ms-input-placeholder {
@@ -129,4 +128,3 @@ form > div {
 .content--link span a:hover {
   color: #2196f3;
 }
-

@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans");
 
-/* Resets */
+/* ---------------------------------
+  Resets
+------------------------------------ */
 * {
   padding: 0;
   margin: 0;
@@ -12,7 +14,10 @@ html {
   font-family: "Open Sans", sans-serif;
 }
 
-/* Variables */
+/* ---------------------------------
+  Variables
+------------------------------------ */
+
 :root {
   /* --primary-color: #E65100; */
   --primary-color: #673ab7;
@@ -26,23 +31,32 @@ html {
   --status-resolved: #8bc34a;
 }
 
-/* Components */
+/* ---------------------------------
+  Components
+------------------------------------ */
+
 .card {
   background-color: var(--text-color);
   box-shadow: -0.1rem 0.1rem 0.6rem rgba(2, 2, 2, 0.3);
   z-index: 1;
-  margin: 2rem 2rem;
+  margin: 1.5rem 2rem;
   padding: 2rem;
 }
 
+
+
+/* Badge and Status */
+
 .badge {
-  border-radius: 6%;
+  border-radius: 6rem;
   padding: 0.8rem;
-  margin: 1rem;
+  margin: 0.3rem;
   max-height: 3rem;
-  min-width: 7rem;
+  max-width: 7rem;
   color: var(--text-color);
   font-weight: bold;
+  text-align: center;
+  font-size: 1rem;
 }
 
 .status--pending {
@@ -58,17 +72,85 @@ html {
   background-color: var(--status-resolved);
 }
 
-.table{
+
+
+/* Table */
+
+.table {
   flex-direction: column;
 }
 
-.table--row{
+.table--row {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-evenly;
-
+  justify-content: right;
+  font-size: 1.5rem;
+  padding: 2rem 5rem;
+  border-bottom: solid 1px rgba(0, 0, 0, 0.2);
+  text-align: left;
 }
 
-.header{
-  font-size: 2rem;
+.table--row:nth-child(even) {
+  background-color: whitesmoke;
+}
+
+.t-header {
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding-bottom: 1rem;
+  border-bottom: solid 1px;
+}
+
+.th,
+.td {
+  width: 20%;
+}
+
+.th:first-child,
+.td:first-child {
+  width: 30%;
+  margin-left: 3.5rem;
+}
+
+
+
+/* nav */
+
+.nav {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  align-items: center;
+  color: var(--text-color);
+  margin: 1rem;
+}
+
+.nav--search-input {
+  background-color: var(--text-color);
+  border-radius: 1.5rem;
+  height: 3rem;
+  width: 30rem;
+  padding: 0 1.8rem;
+}
+
+form button {
+  background-color: inherit;
+  border-style: none;
+}
+
+.nav--icon {
+  height: 2rem;
+  width: 3.5rem;
+  fill: var(--text-color);
+}
+
+.nav--icon-primary {
+  height: 2rem;
+  width: 3.5rem;
+  fill: var(--primary-color);
+}
+
+.nav--link{
+  color: var(--text-color);
+  text-decoration: none;
+  font-size: 1.5rem;
 }

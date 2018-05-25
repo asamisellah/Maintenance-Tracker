@@ -33,7 +33,21 @@
           </button>
         </form>
 
-        <div class="flex">
+        <a class="nav--link flex" href="#">
+          <span>
+            <svg class="nav--icon">
+              <use xlink:href="../icons/sprite.svg#icon-add_circle"></use>
+            </svg>
+          </span> Make request</a>
+
+        <a class="nav--link flex" href="#">
+          <span>
+            <svg class="nav--icon">
+              <use xlink:href="../icons/sprite.svg#icon-toc"></use>
+            </svg>
+          </span>All requests</a>
+
+        <div class="flex nav--link">
           <svg class="nav--icon avatar">
             <use xlink:href="../icons/sprite.svg#icon-account_circle"></use>
           </svg>
@@ -50,25 +64,25 @@
 
     <div class="main flex">
 
-      <div class="content">
+      <div class="content flex">
         <!-- Title -->
-        <div class="card flex">
+        <div class="title card flex">
           <h1>All Requests (10)</h1>
 
           <div class="stats flex">
             <div class="badge status--pending">pending
-              <span>2</span>
+              <span> 2</span>
             </div>
             <div class="badge status--rejected">rejected
-              <span>1</span>
+              <span> 1</span>
 
             </div>
             <div class="badge status--approved">approved
-              <span>4</span>
+              <span> 4</span>
 
             </div>
             <div class="badge status--resolved">resolved
-              <span>3</span>
+              <span> 3</span>
 
             </div>
           </div>
@@ -85,79 +99,79 @@
             </div>
 
             <div class="table--row">
-              <div class="td">lorem Ipsum</div>
+              <div class="td">Lorem ipsum dolor sit amet...</div>
               <div class="td">repair</div>
               <div class="td">equipment</div>
-              <div class="td">pending</div>
+              <div class="td badge status--pending">pending</div>
             </div>
 
             <div class="table--row">
-              <div class="td">lorem Ipsum</div>
+              <div class="td">Lorem ipsum dolor sit amet...</div>
               <div class="td">replacement</div>
               <div class="td">electrical</div>
-              <div class="td"></div>
+              <div class="td badge status--approved">approved</div>
             </div>
 
             <div class="table--row">
-              <div class="td">lorem Ipsum</div>
+              <div class="td">Lorem ipsum dolor sit amet...</div>
               <div class="td">maintenance</div>
               <div class="td">wall/floor/ceiling</div>
-              <div class="td">accepted</div>
+              <div class="td badge status--resolved">resolved</div>
             </div>
 
             <div class="table--row">
-              <div class="td">lorem Ipsum</div>
+              <div class="td">Lorem ipsum dolor sit amet...</div>
               <div class="td">repair</div>
               <div class="td">plumbing</div>
-              <div class="td">rejected</div>
+              <div class="td badge status--rejected">rejected</div>
             </div>
 
             <div class="table--row">
-              <div class="td">lorem Ipsum</div>
+              <div class="td">Lorem ipsum dolor sit amet...</div>
               <div class="td">maintenance</div>
               <div class="td">automotive</div>
-              <div class="td">pending</div>
+              <div class="td badge status--pending">pending</div>
             </div>
           </div>
         </div>
       </div>
       <!-- End of .content -->
 
-      <!-- footer -->
-      <footer>
-        <div class="nav">
+    </div>
+    <!-- End of .main -->
+
+    <!-- footer -->
+    <footer>
+      <div class="nav">
+        <p class="flex">
+          <span>
+            <svg class="nav--icon-primary">
+              <use xlink:href="../icons/sprite.svg#icon-copyright"></use>
+            </svg>
+          </span>All rights reserved
+        </p>
+
+        <div class="container--item">
           <p class="flex">
             <span>
               <svg class="nav--icon-primary">
-                <use xlink:href="../icons/sprite.svg#icon-copyright"></use>
+                <use xlink:href="../icons/sprite.svg#icon-phone"></use>
               </svg>
-            </span>All rights reserved
-          </p>
-
-          <div class="container--item">
-            <p class="flex">
-              <span>
-                <svg class="nav--icon-primary">
-                  <use xlink:href="../icons/sprite.svg#icon-phone"></use>
-                </svg>
-              </span> +254798654321</p>
-          </div>
-
-          <div class="container--item">
-            <p class="flex">
-              <span>
-                <svg class="nav--icon-primary">
-                  <use xlink:href="../icons/sprite.svg#icon-mail_outline"></use>
-                </svg>
-              </span> info@hicaretracker.com</p>
-          </div>
+            </span> +254798654321</p>
         </div>
 
-      </footer>
-      <!-- End of footer -->
+        <div class="container--item">
+          <p class="flex">
+            <span>
+              <svg class="nav--icon-primary">
+                <use xlink:href="../icons/sprite.svg#icon-mail_outline"></use>
+              </svg>
+            </span> info@hicaretracker.com</p>
+        </div>
+      </div>
 
-    </div>
-    <!-- End of .main -->
+    </footer>
+    <!-- End of footer -->
 
   </div>
   <!-- End of .container -->
