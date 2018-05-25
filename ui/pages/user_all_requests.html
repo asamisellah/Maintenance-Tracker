@@ -16,14 +16,15 @@
   <div class="container">
 
     <header>
+
       <!-- Navigation -->
       <nav class="nav">
 
-        <div class="nav--brand">
+        <div class="nav--brand container--item">
           <h4>HiCare Tracker</h4>
         </div>
 
-        <form class="nav--search flex">
+        <form class="container--item flex">
           <input class="nav--search-input" type="text" name="search" placeholder="search">
           <button type="submit">
             <svg class="nav--icon">
@@ -45,49 +46,121 @@
     <!-- End of header -->
 
 
-    <div class="content">
-      <div class="main">
+    <!-- Main content -->
 
+    <div class="main flex">
+
+      <div class="content">
+        <!-- Title -->
+        <div class="card flex">
+          <h1>All Requests (10)</h1>
+
+          <div class="stats flex">
+            <div class="badge status--pending">pending
+              <span>2</span>
+            </div>
+            <div class="badge status--rejected">rejected
+              <span>1</span>
+
+            </div>
+            <div class="badge status--approved">approved
+              <span>4</span>
+
+            </div>
+            <div class="badge status--resolved">resolved
+              <span>3</span>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- body -->
+        <div class="card">
+          <div class="table flex">
+            <div class="table--row t-header">
+              <div class="th">Title</div>
+              <div class="th">Service type</div>
+              <div class="th">Category</div>
+              <div class="th">Status</div>
+            </div>
+
+            <div class="table--row">
+              <div class="td">lorem Ipsum</div>
+              <div class="td">repair</div>
+              <div class="td">equipment</div>
+              <div class="td">pending</div>
+            </div>
+
+            <div class="table--row">
+              <div class="td">lorem Ipsum</div>
+              <div class="td">replacement</div>
+              <div class="td">electrical</div>
+              <div class="td"></div>
+            </div>
+
+            <div class="table--row">
+              <div class="td">lorem Ipsum</div>
+              <div class="td">maintenance</div>
+              <div class="td">wall/floor/ceiling</div>
+              <div class="td">accepted</div>
+            </div>
+
+            <div class="table--row">
+              <div class="td">lorem Ipsum</div>
+              <div class="td">repair</div>
+              <div class="td">plumbing</div>
+              <div class="td">rejected</div>
+            </div>
+
+            <div class="table--row">
+              <div class="td">lorem Ipsum</div>
+              <div class="td">maintenance</div>
+              <div class="td">automotive</div>
+              <div class="td">pending</div>
+            </div>
+          </div>
+        </div>
       </div>
-      <!-- End of .main -->
+      <!-- End of .content -->
 
-    </div>
-    <!-- End of .content -->
-
-    <footer>
-      <div class="nav">
-        <p class="flex">
-          <span>
-            <svg class="nav--icon">
-              <use xlink:href="../icons/sprite.svg#icon-copyright"></use>
-            </svg>
-          </span>All rights reserved
-        </p>
-
-        <div class="contact--item">
+      <!-- footer -->
+      <footer>
+        <div class="nav">
           <p class="flex">
             <span>
-              <svg class="nav--icon">
-                <use xlink:href="../icons/sprite.svg#icon-phone"></use>
+              <svg class="nav--icon-primary">
+                <use xlink:href="../icons/sprite.svg#icon-copyright"></use>
               </svg>
-            </span> +254798654321</p>
+            </span>All rights reserved
+          </p>
+
+          <div class="container--item">
+            <p class="flex">
+              <span>
+                <svg class="nav--icon-primary">
+                  <use xlink:href="../icons/sprite.svg#icon-phone"></use>
+                </svg>
+              </span> +254798654321</p>
+          </div>
+
+          <div class="container--item">
+            <p class="flex">
+              <span>
+                <svg class="nav--icon-primary">
+                  <use xlink:href="../icons/sprite.svg#icon-mail_outline"></use>
+                </svg>
+              </span> info@hicaretracker.com</p>
+          </div>
         </div>
 
-        <div class="contact--item">
-          <p class="flex">
-            <span>
-              <svg class="nav--icon">
-                <use xlink:href="../icons/sprite.svg#icon-mail_outline"></use>
-              </svg>
-            </span> info@hicaretracker.com</p>
-        </div>
+      </footer>
+      <!-- End of footer -->
 
-
-    </footer>
-    <!-- End of footer -->
     </div>
-    <!-- End of .container -->
+    <!-- End of .main -->
 
+  </div>
+  <!-- End of .container -->
 
 </body>
 

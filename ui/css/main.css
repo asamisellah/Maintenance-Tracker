@@ -1,22 +1,74 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
+
 /* Resets */
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
-  }
-
-  html {
-    font-size: 62.5%;
-    font-family: "Lato", sans-serif;
-  }
-
-  /* Variables */
-:root{
-  --primary-color: #171823;
-  --button-blue: #0d47a1;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
-  /* Animations */
+html {
+  font-size: 62.5%;
+  font-family: "Open Sans", sans-serif;
+}
 
+/* Variables */
+:root {
+  /* --primary-color: #E65100; */
+  --primary-color: #673ab7;
+  --secondary-color: #ede7f6;
+  --button-blue: #0d47a1;
+  --text-color: #fff;
 
-  /* Components */
+  --status-approved: #2196f3;
+  --status-rejected: #f44336;
+  --status-pending: #ff9800;
+  --status-resolved: #8bc34a;
+}
+
+/* Components */
+.card {
+  background-color: var(--text-color);
+  box-shadow: -0.1rem 0.1rem 0.6rem rgba(2, 2, 2, 0.3);
+  z-index: 1;
+  margin: 2rem 2rem;
+  padding: 2rem;
+}
+
+.badge {
+  border-radius: 6%;
+  padding: 0.8rem;
+  margin: 1rem;
+  max-height: 3rem;
+  min-width: 7rem;
+  color: var(--text-color);
+  font-weight: bold;
+}
+
+.status--pending {
+  background-color: var(--status-pending);
+}
+.status--approved {
+  background-color: var(--status-approved);
+}
+.status--rejected {
+  background-color: var(--status-rejected);
+}
+.status--resolved {
+  background-color: var(--status-resolved);
+}
+
+.table{
+  flex-direction: column;
+}
+
+.table--row{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+
+}
+
+.header{
+  font-size: 2rem;
+}

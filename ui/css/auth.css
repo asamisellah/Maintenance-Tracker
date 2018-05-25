@@ -5,9 +5,6 @@
 /* --------------------------------------------------------------
     # User sign in and sign Up page css
 -----------------------------------------------------------------*/
-html{
-  background-color: var(--primary-color);
-}
 
 /* .bg {
   background: url(../img/bg-cover.jpg);
@@ -30,6 +27,7 @@ html{
   height: 100vh;
   justify-content: center;
   font-size: 2rem;
+  background-color: var(--primary-color);
 }
 
 .main {
@@ -48,7 +46,7 @@ html{
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #fff;
+  color: var(--text-color);
 }
 
 .content > div {
@@ -57,17 +55,17 @@ html{
 
 .content a,
 ::placeholder {
-  color: #fff;
+  color: var(--text-color);
   text-decoration: none;
   opacity: 0.8;
 }
 :-ms-input-placeholder {
   /* Internet Explorer 10-11 */
-  color: #fff;
+  color: var(--text-color);
 }
 ::-ms-input-placeholder {
   /* Microsoft Edge */
-  color: #fff;
+  color: var(--text-color);
 }
 
 .content--title {
@@ -89,7 +87,7 @@ form > div {
   padding: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.4);
   background-color: transparent;
-  color: #fff;
+  color: var(--text-color);
 }
 /* .form--item > input:hover {
   text-indent: 1rem; 
@@ -115,7 +113,7 @@ form > div {
   width: 100%;
   border-style: none;
   font-size: 2rem;
-  color: #fff;
+  color: var(--text-color);
 }
 .content--button:hover {
   border-color: rgba(13, 71, 161, 0.5);
