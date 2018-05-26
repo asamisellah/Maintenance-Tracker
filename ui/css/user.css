@@ -94,13 +94,3 @@ textarea .input--text{
   font-size: 2rem;
   color: var(--text-color);
 }
-
-footer {
-  background-color: inherit;
-  width: 100%;
-}
-
-footer .nav {
-  margin: 5rem 0;
-  color: var(--primary-color);
-}
