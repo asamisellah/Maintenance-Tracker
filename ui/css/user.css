@@ -9,15 +9,11 @@
   flex-direction: column;
   z-index: -2;
   background-color: var(--secondary-color);
+  min-height: 100vh;
 }
 
 .container--item {
   margin: 1rem 0;
-}
-
-.flex {
-  display: flex;
-  justify-content: center;
 }
 
 header {
@@ -42,9 +38,61 @@ header {
   
 }
 
-.stats{
-  justify-content: flex-end;
-  flex-flow: wrap;
+.form--request{
+  font-size: 1.8rem;
+  margin: 1rem 0;
+}
+
+.form--item{
+  display: flex;
+}
+
+.form--item > div{
+  margin: .5rem 1rem;
+  padding: .5rem 1rem;
+}
+
+.form--input-label{
+  width: 15%;
+}
+
+.form--input-type{
+  width: 80%;
+}
+
+.input--text{
+  font-size: 2rem;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  width: 100%;
+  border: 1px solid rgba(0,0,0, 0.4);
+  background-color: transparent;  
+}
+
+textarea .input--text{
+  font: inherit;
+}
+
+#category{
+  background-color: var(--text-color);
+  border: 1px solid rgba(0,0,0, 0.4);
+  border-radius: 0.3rem;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+  font-size: 2rem;
+}
+
+.submit--button{
+  background-color: var(--primary-color);
+  border-radius: 0.3rem;
+  border-style: none;
+  width: 25%;
+  padding: 1rem;
+  margin-top: 5rem;
+  text-align: center;
+  font-size: 2rem;
+  color: var(--text-color);
 }
 
 footer {
@@ -53,6 +101,6 @@ footer {
 }
 
 footer .nav {
-  margin: rem 0;
+  margin: 5rem 0;
   color: var(--primary-color);
 }
