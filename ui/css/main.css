@@ -1,4 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Open+Sans");
+@import url('https://fonts.googleapis.com/css?family=Squada+One');
+
 
 /* ---------------------------------
   Resets
@@ -174,4 +176,7 @@ form .search--button {
   font-size: 1.5rem;
 }
 
-
+.nav--brand{
+  font-family: "Squad One", sans-serif;
+  font-size: 3rem;
+}
