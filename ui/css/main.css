@@ -68,7 +68,7 @@ html {
   padding: 0.8rem;
   margin: 0.3rem;
   max-height: 3rem;
-  max-width: 7rem;
+  min-width: 7rem;
   color: var(--text-color);
   font-weight: bold;
   text-align: center;
@@ -153,7 +153,7 @@ html {
   padding: 0 1.8rem;
 }
 
-form .search--button {
+.search--button {
   background-color: inherit;
   border-style: none;
 }
@@ -179,4 +179,17 @@ form .search--button {
 .nav--brand{
   font-family: "Squad One", sans-serif;
   font-size: 3rem;
+}
+
+
+/* footer */
+
+footer {
+  background-color: inherit;
+  width: 100%;
+}
+
+footer .nav {
+  margin: 1rem 0;
+  color: var(--primary-color);
 }
