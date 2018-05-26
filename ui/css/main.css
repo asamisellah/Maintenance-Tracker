@@ -14,6 +14,7 @@ html {
   font-family: "Open Sans", sans-serif;
 }
 
+
 /* ---------------------------------
   Variables
 ------------------------------------ */
@@ -34,6 +35,19 @@ html {
 /* ---------------------------------
   Components
 ------------------------------------ */
+/* flex */
+.flex {
+  display: flex;
+  justify-content: center;
+}
+
+.flex--column{
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* card */
 
 .card {
   background-color: var(--text-color);
@@ -70,6 +84,11 @@ html {
 }
 .status--resolved {
   background-color: var(--status-resolved);
+}
+
+.stats{
+  justify-content: flex-end;
+  flex-flow: wrap;
 }
 
 
@@ -132,7 +151,7 @@ html {
   padding: 0 1.8rem;
 }
 
-form button {
+form .search--button {
   background-color: inherit;
   border-style: none;
 }
@@ -154,3 +173,5 @@ form button {
   text-decoration: none;
   font-size: 1.5rem;
 }
+
+
