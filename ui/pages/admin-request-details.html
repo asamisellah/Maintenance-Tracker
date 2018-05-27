@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/admin.css">
+    <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+
+    <title>HiCare Tracker | All requests</title>
+
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+
+            <!-- Navigation -->
+            <nav class="nav">
+
+                <div class="nav--brand container--item">
+                    <h4>HiCare Tracker</h4>
+                </div>
+
+                <form class="container--item flex">
+                    <input class="nav--search-input" type="text" name="search" placeholder="search">
+                    <button class="search--button" type="submit">
+                        <svg class="nav--icon">
+                            <use xlink:href="../icons/sprite.svg#icon-search"></use>
+                        </svg>
+                    </button>
+                </form>
+
+                <a class="nav--link flex msg" href="user_all_requests.html">
+                    <span>
+                        <svg class="nav--icon">
+                            <use xlink:href="../icons/sprite.svg#icon-message"></use>
+                        </svg>
+                    </span>4 new</a>
+
+                <div class="flex nav--link">
+                    <svg class="nav--icon avatar">
+                        <use xlink:href="../icons/sprite.svg#icon-account_circle"></use>
+                    </svg>
+                    <span>Admin</span>
+                </div>
+
+            </nav>
+            <!-- End of navbar -->
+        </header>
+        <!-- End of header -->
+
+
+
+        <!-- Main content -->
+        <div class="main flex">
+
+            <!-- sidenav -->
+            <div class="side--nav">
+                <div class="link--group">
+                    <h4>Requests</h4>
+
+                    <div class="links flex--column">
+                        <div>
+                            <a class="nav--link" href="">Pending</a>
+                        </div>
+                        <div>
+                            <a class="nav--link" href="">Accepted</a>
+                        </div>
+                        <div>
+                            <a class="nav--link" href="">Resolved</a>
+                        </div>
+                        <div>
+                            <a class="nav--link" href="">Rejected</a>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="link--group">
+                    <h4>Accounts</h4>
+
+                    <div class="links flex--column">
+                        <div>
+                            <a class="nav--link" href="">Users</a>
+                        </div>
+                        <div>
+                            <a class="nav--link" href="">Profile</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End of sidenav -->
+
+            <div class="content flex--column    ">
+                <!-- title -->
+                <div class="title card flex">
+                    <h1>Repair Leaking Pipe</h1>
+                    <div class="badge status--pending">
+                        pending
+                    </div>
+
+                </div>
+
+                <!-- body -->
+                <div class="flex">
+                    <div class="description card flex--column">
+                        <div>
+                            <h4>Description</h4>
+                        </div>
+
+                        <div>
+                            <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Veniam, consequuntur. Ducimus fugiat
+                                nesciunt incidunt praesentium quae quibusdam necessitatibus quidem eius dolore, molestiae
+                                architecto reprehenderit omnis quam facilis aperiam, consectetur sapiente!</p>
+                        </div>
+                        
+                        <div><h6><strong>Request made by: </strong>user@email.com</h6></div>
+                    </div>
+
+                    <div class="flex--column">
+                        <div class="card flex">
+                            <div class="flex--column">
+                                <p>
+                                    <span>
+                                        <svg class="nav--icon">
+                                            <use xlink:href="../icons/sprite.svg#icon-build"></use>
+                                        </svg>
+                                    </span>
+                                    <strong>Type:</strong>
+                                </p>
+                                <p>
+                                    <span>
+                                        <svg class="nav--icon">
+                                            <use xlink:href="../icons/sprite.svg#icon-class"></use>
+                                        </svg>
+                                    </span>
+                                    <strong>Category:</strong>
+                                </p>
+                                <p>
+                                    <span>
+                                        <svg class="nav--icon">
+                                            <use xlink:href="../icons/sprite.svg#icon-room"></use>
+                                        </svg>
+                                    </span>
+                                    <strong>Area:</strong>
+                                </p>
+                            </div>
+                            <div class="flex--column">
+                                <p>Repair</p>
+                                <p>Plumbing</p>
+                                <p>Block A, basement</p>
+                            </div>
+                        </div>
+                        <div class="card flex--column">
+                            <div class="flex">
+                                <div class="flex--column">
+                                    <p>Received:</p>
+                                    <p>Updated:</p>
+                                </div>
+                                <div class="flex--column">
+                                    <p>1 Feb, 2018</p>
+                                    <p>4Feb, 2018</p>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- End of body -->
+
+        </div>
+        <!-- End of .content -->
+    </div>
+    <!-- End of .main -->
+
+
+    <!-- footer -->
+    <footer>
+        <div class="nav">
+            <p class="flex">
+                <span>
+                    <svg class="nav--icon-primary">
+                        <use xlink:href="../icons/sprite.svg#icon-copyright"></use>
+                    </svg>
+                </span>All rights reserved
+            </p>
+
+            <div class="container--item">
+                <p class="flex">
+                    <span>
+                        <svg class="nav--icon-primary">
+                            <use xlink:href="../icons/sprite.svg#icon-phone"></use>
+                        </svg>
+                    </span> +254798654321</p>
+            </div>
+
+            <div class="container--item">
+                <p class="flex">
+                    <span>
+                        <svg class="nav--icon-primary">
+                            <use xlink:href="../icons/sprite.svg#icon-mail_outline"></use>
+                        </svg>
+                    </span> info@hicaretracker.com</p>
+            </div>
+        </div>
+
+    </footer>
+    <!-- End of footer -->
+
+    </div>
+    <!-- End of .container -->
+
+
+</body>
+
+</html>

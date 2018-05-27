@@ -14,6 +14,10 @@
   fill: var(--status-pending);
 }
 
+.nav--icon{
+  fill: var(--primary-color);
+}
+
 .search--button:active {
   background-color: var(--text-color);
   box-shadow: -0.1rem 0.1rem 0.6rem rgba(2, 2, 2, 0.3);
@@ -29,9 +33,6 @@
 .td:first-child {
   width: 5%;
   margin-left: 3.5rem;
-}
-
-.main{
 }
 
 .content{
@@ -68,5 +69,17 @@ hr{
 .badge{
   box-shadow: -0.1rem 0.1rem 0.6rem rgba(2, 2, 2, 0.3);
 }
+
+.description{
+  justify-content: space-between;
+  font-size: 1.5rem;
+  line-height: 3rem;
+  width: 70%;
+}
+
+.description > div h6{
+  color: var(--primary-color);
+}
+
 
 
