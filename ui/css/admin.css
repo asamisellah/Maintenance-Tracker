@@ -70,16 +70,45 @@ hr{
   box-shadow: -0.1rem 0.1rem 0.6rem rgba(2, 2, 2, 0.3);
 }
 
+.container--details{
+  justify-content: flex-start;
+}
+
 .description{
   justify-content: space-between;
   font-size: 1.5rem;
   line-height: 3rem;
-  width: 70%;
+  width: 62%;
 }
 
-.description > div h6{
-  color: var(--primary-color);
+.description > div{
+  margin: 1rem;
 }
 
+.description > div h5{
+  color: rgba(0, 0, 0, 0.5);
+}
 
+.submit--button{
+  padding: 1rem 1.5rem;
+  font-size: 1.5rem;
+  width: auto;
+  
+}
 
+.button--group{
+  justify-content: space-between;
+}
+
+.status--delete{
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.details{
+  font-size: 1.3rem;
+  justify-content: space-between;
+}
+
+.details div > p{
+  padding: .2rem 0;
+}

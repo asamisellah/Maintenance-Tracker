@@ -107,7 +107,7 @@
                 </div>
 
                 <!-- body -->
-                <div class="flex">
+                <div class="container--details flex">
                     <div class="description card flex--column">
                         <div>
                             <h4>Description</h4>
@@ -118,12 +118,23 @@
                                 nesciunt incidunt praesentium quae quibusdam necessitatibus quidem eius dolore, molestiae
                                 architecto reprehenderit omnis quam facilis aperiam, consectetur sapiente!</p>
                         </div>
-                        
-                        <div><h6><strong>Request made by: </strong>user@email.com</h6></div>
+
+                        <div>
+                            <h5>
+                                <strong>Request made by: </strong>user@email.com</h5>
+                        </div>
+
+                        <div class="button--group flex">
+                            <button class="submit--button card status--resolved" type="submit">Resolve</button>
+                            <div class="flex">
+                                <button class="submit--button card status--approved" type="submit">Approve</button>
+                                <button class="submit--button card status--rejected" type="submit">Reject</button>
+                            </div>
+                        </div>
                     </div>
 
                     <div class="flex--column">
-                        <div class="card flex">
+                        <div class="details card flex">
                             <div class="flex--column">
                                 <p>
                                     <span>
@@ -131,7 +142,7 @@
                                             <use xlink:href="../icons/sprite.svg#icon-build"></use>
                                         </svg>
                                     </span>
-                                    <strong>Type:</strong>
+                                    <strong>Type:</strong>   Repair
                                 </p>
                                 <p>
                                     <span>
@@ -139,7 +150,7 @@
                                             <use xlink:href="../icons/sprite.svg#icon-class"></use>
                                         </svg>
                                     </span>
-                                    <strong>Category:</strong>
+                                    <strong>Category:</strong>     Plumbing
                                 </p>
                                 <p>
                                     <span>
@@ -147,27 +158,20 @@
                                             <use xlink:href="../icons/sprite.svg#icon-room"></use>
                                         </svg>
                                     </span>
-                                    <strong>Area:</strong>
+                                    <strong>Area:</strong>   Block A, basement
                                 </p>
                             </div>
-                            <div class="flex--column">
-                                <p>Repair</p>
-                                <p>Plumbing</p>
-                                <p>Block A, basement</p>
-                            </div>
                         </div>
-                        <div class="card flex--column">
+
+                        <div class="details card flex--column">
                             <div class="flex">
                                 <div class="flex--column">
-                                    <p>Received:</p>
-                                    <p>Updated:</p>
-                                </div>
-                                <div class="flex--column">
-                                    <p>1 Feb, 2018</p>
-                                    <p>4Feb, 2018</p>
+                                    <p><strong>Received:</strong>   1 Feb, 2018</p>
+                                    <p><strong>Updated:</strong>    4Feb, 2018</p>
                                 </div>
                             </div>
 
+                            <button class="submit--button card status--delete" type="submit">Delete</button>
 
                         </div>
                     </div>
