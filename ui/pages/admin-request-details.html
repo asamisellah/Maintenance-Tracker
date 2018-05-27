@@ -33,7 +33,7 @@
                     </button>
                 </form>
 
-                <a class="nav--link flex msg" href="user_all_requests.html">
+                <a class="nav--link flex msg" href="admin-all-requests.html">
                     <span>
                         <svg class="nav--icon">
                             <use xlink:href="../icons/sprite.svg#icon-message"></use>
@@ -60,7 +60,7 @@
             <!-- sidenav -->
             <div class="side--nav">
                 <div class="link--group">
-                    <h4>Requests</h4>
+                    <a class="link" href="admin-all-requests.html"><h4>Requests</h4></a>
 
                     <div class="links flex--column">
                         <div>
@@ -125,10 +125,10 @@
                         </div>
 
                         <div class="button--group flex">
-                            <button class="submit--button card status--resolved" type="submit">Resolve</button>
+                            <button id="resolve" class="submit--button card status--resolved" type="submit" onclick="enableButton()">Resolve</button>
                             <div class="flex">
-                                <button class="submit--button card status--approved" type="submit">Approve</button>
-                                <button class="submit--button card status--rejected" type="submit">Reject</button>
+                                <button id="approve" class="submit--button card status--approved" type="submit" onclick="disableButton()">Approve</button>
+                                <button id="reject" class="submit--button card status--rejected" type="submit" onclick="rejectButton()">Reject</button>
                             </div>
                         </div>
                     </div>
@@ -222,6 +222,7 @@
     </div>
     <!-- End of .container -->
 
+    <script src="../js/custom.js"></script>
 
 </body>
 

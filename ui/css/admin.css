@@ -57,6 +57,10 @@ hr{
   border: solid 1px rgba(0, 0, 0, 0.2);
 }
 
+.link{
+  text-decoration-line: none;
+}
+
 .links > div{
   padding: .5rem;
 }
@@ -111,4 +115,9 @@ hr{
 
 .details div > p{
   padding: .2rem 0;
+}
+
+.disabled{
+  background-color: rgba(0, 0, 0, 0.2);
+  cursor: not-allowed;
 }
