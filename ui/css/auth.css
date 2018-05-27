@@ -1,0 +1,130 @@
+/* Imports */
+@import url("main.css");
+
+/* --------------------------------------------------------------
+    # User sign in and sign Up page css
+-----------------------------------------------------------------*/
+
+/* .bg {
+  background: url(../img/bg-cover.jpg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center;
+  background-size: cover;
+  opacity: 0.5;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: fixed;
+  filter: blur(0.5rem);
+} */
+
+.container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  font-size: 2rem;
+  background-color: var(--primary-color);
+}
+
+.main {
+  order: 1;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.4);
+  min-width: 40rem;
+  border-radius: 0.8rem;
+  z-index: 2000;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.content > div {
+  margin-bottom: 1.8rem;
+}
+
+.content a,
+::placeholder {
+  color: var(--text-color);
+  text-decoration: none;
+  opacity: 0.8;
+}
+:-ms-input-placeholder {
+  /* Internet Explorer */
+  color: var(--text-color);
+}
+::-ms-input-placeholder {
+  /* Microsoft Edge */
+  color: var(--text-color);
+}
+
+.content--title {
+  font-size: 3rem;
+  padding-top: 2rem;
+  color: #d0b393;
+  text-shadow: 1px 2px var();
+}
+
+form > div {
+  display: flex;
+  justify-content: center;
+  margin-top: 3rem;
+}
+
+.form--item > input {
+  font-size: 2rem;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: transparent;
+  color: var(--text-color);
+}
+/* .form--item > input:hover {
+  text-indent: 1rem; 
+  border: 0.2rem solid rgba(255, 255, 255, 0.5); 
+  background-color: rgba(255, 255, 255, 0.4);
+} */
+.form--item > input:focus {
+  text-indent: 1rem;
+  outline-style: none;
+  border: 0.1rem solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+}
+.form--item > input:focus::-webkit-input-placeholder {
+  color: transparent;
+}
+
+.content--button {
+  background-color: var(--button-blue);
+  border-radius: 0.3rem;
+  padding: 1rem;
+  text-align: center;
+  width: 100%;
+  border-style: none;
+  font-size: 2rem;
+  color: var(--text-color);
+}
+.content--button:hover {
+  border-color: rgba(13, 71, 161, 0.5);
+  box-shadow: 0 0 0 2px rgba(13, 71, 161, 0.5);
+  font-size: 2.2rem;
+}
+
+.content--link span a {
+  color: var(--button-blue);
+  font-size: 2rem;
+  font-weight: bold;
+}
+.content--link span a:hover {
+  color: #2196f3;
+}
