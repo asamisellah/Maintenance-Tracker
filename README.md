@@ -1,4 +1,4 @@
-# <span style="color:#673ab7">Maintenance Tracker APP</span>
+# <span style="color:#673ab7">Maintenance Tracker App</span>
 Maintenance Tracker App is an application that enables users to reach out to operations or repairs department regarding repair or maintenance requests and monitor the status of their request.
 
 ## Preview
