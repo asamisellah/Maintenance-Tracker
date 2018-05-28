@@ -147,6 +147,8 @@ html {
 
 .nav--search-input {
   background-color: var(--text-color);
+  font: 16px "Open Sans","sans-serif";
+
   border-radius: 1.5rem;
   height: 3rem;
   width: 30rem;
