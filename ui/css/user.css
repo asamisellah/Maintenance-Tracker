@@ -98,3 +98,17 @@ form .submit--button{
     background-color: var(--primary-color);
 
 }
+
+.pagination .nav--icon-primary{
+  margin-top: 1.5rem;
+  height: 3rem;
+
+}
+
+.pagination div h3{
+  color: var(--primary-color);
+  font-size: 1.5rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  padding-top: 1.8rem;
+}
