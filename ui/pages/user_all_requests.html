@@ -47,11 +47,17 @@
             </svg>
           </span>All requests</a>
 
-        <div class="flex nav--link">
-          <svg class="nav--icon avatar">
-            <use xlink:href="../icons/sprite.svg#icon-account_circle"></use>
-          </svg>
-          <span>username</span>
+          <div class="dropdown nav--link">
+            <a class="nav--link flex" href="user_all_requests.html">
+              <span>
+                <svg class="nav--icon">
+                  <use xlink:href="../icons/sprite.svg#icon-account_circle"></use>
+                </svg>
+              </span>Username</a>
+            
+          <div class="dropdown--links card">
+            <a class="nav--link" href="signin.html">Sign Out</a>
+          </div>
         </div>
 
       </nav>
@@ -100,38 +106,56 @@
 
             <div class="table--row">
               <div class="td">Lorem ipsum dolor sit amet...</div>
-              <div class="td">repair</div>
-              <div class="td">equipment</div>
-              <div class="td badge status--pending">pending</div>
+              <div class="td">Repair</div>
+              <div class="td">Equipment</div>
+              <div class="td badge status--pending">Pending</div>
             </div>
 
             <div class="table--row">
               <div class="td">Lorem ipsum dolor sit amet...</div>
-              <div class="td">replacement</div>
-              <div class="td">electrical</div>
-              <div class="td badge status--approved">approved</div>
+              <div class="td">Repair</div>
+              <div class="td">Electrical</div>
+              <div class="td badge status--approved">Approved</div>
             </div>
 
             <div class="table--row">
               <div class="td">Lorem ipsum dolor sit amet...</div>
-              <div class="td">maintenance</div>
-              <div class="td">wall/floor/ceiling</div>
-              <div class="td badge status--resolved">resolved</div>
+              <div class="td">Maintenance</div>
+              <div class="td">Wall/Floor/Ceiling</div>
+              <div class="td badge status--resolved">Resolved</div>
             </div>
 
             <div class="table--row">
               <div class="td">Lorem ipsum dolor sit amet...</div>
-              <div class="td">repair</div>
-              <div class="td">plumbing</div>
-              <div class="td badge status--rejected">rejected</div>
+              <div class="td">Repair</div>
+              <div class="td">Plumbing</div>
+              <div class="td badge status--rejected">Rejected</div>
             </div>
 
             <div class="table--row">
               <div class="td">Lorem ipsum dolor sit amet...</div>
-              <div class="td">maintenance</div>
-              <div class="td">automotive</div>
-              <div class="td badge status--pending">pending</div>
+              <div class="td">Maintenance</div>
+              <div class="td">Automotive</div>
+              <div class="td badge status--pending">Pending</div>
             </div>
+          </div>
+
+          <div class="pagination flex">
+            <svg class="nav--icon-primary">
+              <use xlink:href="../icons/sprite.svg#icon-navigate_before"></use>
+            </svg>
+
+            <div class="flex">
+              <h3>1</h3>
+              <h3>2</h3>
+              <h3>3</h3>
+              <h3>4</h3>
+              <h3>...</h3>
+            </div>
+
+            <svg class="nav--icon-primary">
+              <use xlink:href="../icons/sprite.svg#icon-navigate_next"></use>
+            </svg>
           </div>
         </div>
       </div>

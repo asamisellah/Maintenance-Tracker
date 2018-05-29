@@ -147,6 +147,8 @@ html {
 
 .nav--search-input {
   background-color: var(--text-color);
+  font: 16px "Open Sans","sans-serif";
+
   border-radius: 1.5rem;
   height: 3rem;
   width: 30rem;
@@ -179,6 +181,31 @@ html {
 .nav--brand{
   font-family: "Squad One", sans-serif;
   font-size: 3rem;
+}
+
+.dropdown{
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown a:hover{
+  color: var(--status-pending);
+}
+
+.dropdown--links{
+  display: none;
+  min-width: 160px;
+  position: absolute;
+  margin: 2rem 2rem;
+  padding: 1rem;
+}
+
+.dropdown--links .nav--link{
+  color: var(--primary-color);
+}
+
+.dropdown:hover .dropdown--links{
+  display: block;
 }
 
 
