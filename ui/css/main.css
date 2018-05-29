@@ -183,6 +183,31 @@ html {
   font-size: 3rem;
 }
 
+.dropdown{
+  display: flex;
+  flex-direction: column;
+}
+
+.dropdown a:hover{
+  color: var(--status-pending);
+}
+
+.dropdown--links{
+  display: none;
+  min-width: 160px;
+  position: absolute;
+  margin: 2rem 2rem;
+  padding: 1rem;
+}
+
+.dropdown--links .nav--link{
+  color: var(--primary-color);
+}
+
+.dropdown:hover .dropdown--links{
+  display: block;
+}
+
 
 /* footer */
 

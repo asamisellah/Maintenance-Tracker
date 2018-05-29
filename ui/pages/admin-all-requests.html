@@ -40,11 +40,17 @@
             </svg>
           </span>4 new</a>
 
-        <div class="flex nav--link">
-          <svg class="nav--icon avatar">
-            <use xlink:href="../icons/sprite.svg#icon-account_circle"></use>
-          </svg>
-          <span>Admin</span>
+        <div class="dropdown nav--link">
+          <a class="nav--link flex" href="user_all_requests.html">
+            <span>
+              <svg class="nav--icon">
+                <use xlink:href="../icons/sprite.svg#icon-account_circle"></use>
+              </svg>
+            </span>Admin</a>
+
+          <div class="dropdown--links card">
+            <a class="nav--link" href="signin.html">Sign Out</a>
+          </div>
         </div>
 
       </nav>
@@ -60,7 +66,9 @@
       <!-- sidenav -->
       <div class="side--nav">
         <div class="link--group">
-          <a class="link" href="admin-all-requests.html"><h4>Requests</h4></a>
+          <a class="link" href="admin-all-requests.html">
+            <h4>Requests</h4>
+          </a>
 
           <div class="links flex--column">
             <div>
@@ -134,67 +142,87 @@
 
             <div class="table--row">
               <div class="td">1</div>
-              <div class="td"><a class="link" href="admin-request-details.html">Lorem ipsum</a></div>
+              <div class="td">
+                <a class="link" href="admin-request-details.html">Lorem ipsum</a>
+              </div>
               <div class="td">Repair</div>
               <div class="td">Equipment</div>
               <div class="td">1 May, 2018</div>
-              <div class="td"><em>Approved</em> </div>
+              <div class="td">
+                <em>Approved</em>
+              </div>
             </div>
 
             <div class="table--row">
               <div class="td">2</div>
-              <div class="td"><a class="link" href="admin-request-details.html">Lorem ipsum</a></div>
+              <div class="td">
+                <a class="link" href="admin-request-details.html">Lorem ipsum</a>
+              </div>
               <div class="td">Replacement</div>
               <div class="td">Electrical</div>
               <div class="td">1 May, 2018</div>
-              <div class="td"><em>Approved</em> </div>
+              <div class="td">
+                <em>Approved</em>
+              </div>
             </div>
 
             <div class="table--row">
               <div class="td">3</div>
-              <div class="td"><a class="link" href="admin-request-details.html">Lorem ipsum</a></div>
+              <div class="td">
+                <a class="link" href="admin-request-details.html">Lorem ipsum</a>
+              </div>
               <div class="td">Maintenance</div>
               <div class="td">Wall/Floor/Ceiling</div>
               <div class="td">1 May, 2018</div>
-              <div class="td"><em>Approved</em> </div>
+              <div class="td">
+                <em>Approved</em>
+              </div>
             </div>
 
             <div class="table--row">
               <div class="td">4</div>
-              <div class="td"><a class="link" href="admin-request-details.html">Lorem ipsum</a></div>
+              <div class="td">
+                <a class="link" href="admin-request-details.html">Lorem ipsum</a>
+              </div>
               <div class="td">Repair</div>
               <div class="td">Plumbing</div>
               <div class="td">1 May, 2018</div>
-              <div class="td"><em>Approved</em> </div>
+              <div class="td">
+                <em>Approved</em>
+              </div>
             </div>
 
             <div class="table--row">
               <div class="td">5</div>
-              <div class="td"><a class="link" href="admin-request-details.html">Lorem ipsum</a></div>
+              <div class="td">
+                <a class="link" href="admin-request-details.html">Lorem ipsum</a>
+              </div>
               <div class="td">Maintenance</div>
               <div class="td">Automotive</div>
               <div class="td">1 May, 2018</div>
-              <div class="td"><em>Approved</em> </div>
+              <div class="td">
+                <em>Approved</em>
+              </div>
             </div>
           </div>
 
           <div class="pagination flex">
-              <svg class="nav--icon-primary">
-                <use xlink:href="../icons/sprite.svg#icon-navigate_before"></use>
-              </svg>
-  
-              <div class="flex">
-                <h3>1</h3>
-                <h3>2</h3>
-                <h3>3</h3>
-                <h3>4</h3>
-                <h3>...</h3>
-              </div>
-  
-              <svg class="nav--icon-primary">
-                <use xlink:href="../icons/sprite.svg#icon-navigate_next"></use>
-              </svg>
+            <svg class="nav--icon-primary">
+              <use xlink:href="../icons/sprite.svg#icon-navigate_before"></use>
+            </svg>
+
+            <div class="flex">
+              <h3>1</h3>
+              <h3>2</h3>
+              <h3>3</h3>
+              <h3>4</h3>
+              <h3>...</h3>
             </div>
+
+            <svg class="nav--icon-primary">
+              <use xlink:href="../icons/sprite.svg#icon-navigate_next"></use>
+            </svg>
+          </div>
         </div>
       </div>
       <!-- End of .content -->

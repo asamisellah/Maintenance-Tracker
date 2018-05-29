@@ -28,18 +28,28 @@ header {
 
 .content {
   flex-direction: column;
- align-items: center;
+}
+
+.content--request {
+  flex-direction: column;
+  align-items: center;
   width: 70%;
 }
 
-.title{
+.title {
+  justify-content: space-between;
+  align-items: flex-start;
+  padding-left: 2.5 rem;
+}
+
+.form--title {
   justify-content: space-between;
   align-items: flex-start;
   padding: 3rem 0;
   font-size: 2rem;
 }
 
-.form--request{
+.form--request {
   font-size: 1.8rem;
   margin: 1rem 0;
 }
@@ -49,36 +59,36 @@ header {
   
 } */
 
-.form--item > div{
-  margin: .5rem 1rem;
-  padding: .5rem 1rem;
+.form--item > div {
+  margin: 0.5rem 1rem;
+  padding: 0.5rem 1rem;
 }
 
-.form--input-label{
+.form--input-label {
   width: 25%;
   text-align: right;
 }
 
-.form--input-type{
+.form--input-type {
   width: 60%;
 }
 
-.input--text{
+.input--text {
   font-size: 1.6rem;
   /* border-radius: 0.5rem; */
   padding: 1rem;
   /* width: 100%; */
-  border: 1px solid rgba(0,0,0, 0.4);
-  background-color: transparent;  
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  background-color: transparent;
 }
 
-textarea .input--text{
+textarea .input--text {
   font: inherit;
 }
 
-#category{
+#category {
   background-color: var(--text-color);
-  border: 1px solid rgba(0,0,0, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.4);
   /* border-radius: 0.3rem; */
   padding: 1rem;
   text-align: center;
@@ -86,10 +96,10 @@ textarea .input--text{
   font-size: 1.6rem;
 }
 
-.submit--button{
+.submit--button {
   /* border-radius: 0.3rem; */
   border-style: none;
-  width: 25%;
+  width: 35%;
   padding: 1rem;
   margin-top: 3rem;
   text-align: center;
@@ -98,16 +108,22 @@ textarea .input--text{
   background-color: var(--primary-color);
 }
 
-.pagination .nav--icon-primary{
+.pagination .nav--icon-primary {
   margin-top: 1.5rem;
   height: 3rem;
-
 }
 
-.pagination div h3{
+.pagination div h3 {
   color: var(--primary-color);
   font-size: 1.5rem;
   padding-right: 1rem;
   padding-left: 1rem;
   padding-top: 1.8rem;
+}
+
+#signout {
+}
+
+#signout hidden {
+  display: none;
 }
