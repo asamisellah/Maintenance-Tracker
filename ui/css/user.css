@@ -105,7 +105,11 @@ textarea .input--text {
   text-align: center;
   font-size: 1.6rem;
   color: var(--text-color);
+}
+
+.content--request .submit--button{
   background-color: var(--primary-color);
+
 }
 
 .pagination .nav--icon-primary {
@@ -121,9 +125,3 @@ textarea .input--text {
   padding-top: 1.8rem;
 }
 
-#signout {
-}
-
-#signout hidden {
-  display: none;
-}
