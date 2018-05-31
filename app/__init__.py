@@ -26,21 +26,19 @@ def create_user():
 def signin_user():
     username = request.json.get("username")
     password = request.json.get("password")
-    user = [user for user in users if user["username"] == username]
-    if len(user) == 0:
-        return({"message": "User Not Found"}), 404
-    else:
-        if user["password"] == password:
-            return({"message": "User Successfully Logged in"})
+    current_user = []
+
+    for user in users:
+        if user["username"] == username:
+            current_user.append(user)
+
+    if len(current_user) != 0:
+        if current_user[0]["password"] == password:
+            return jsonify({"message": current_user[0]})
         else:
-            return({"message": "Wrong Username or Password"})
-
-    # user = [user for user in users if user["username"] == userId]
-    # if len(user) == 0:
-    #     return jsonify({"message": "Not Found"}), 404
-
-    # else:
-    #     return jsonify({"user": user}), 200
+            return jsonify({"message": "Wrong username or passwor"})
+    else:
+        return jsonify({"message": "username does not exist"})
 
 
 # POST a request
