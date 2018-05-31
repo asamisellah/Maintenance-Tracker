@@ -12,6 +12,8 @@ Get started [live preview](https://asamisellah.github.io/Maintenance-Tracker/)
 
 [![Build Status](https://travis-ci.org/asamisellah/Maintenance-Tracker.svg?branch=ch-pass-tests-157995248)](https://travis-ci.org/asamisellah/Maintenance-Tracker)
 
+[![Coverage Status](https://coveralls.io/repos/github/asamisellah/Maintenance-Tracker/badge.svg?branch=api-develop)](https://coveralls.io/github/asamisellah/Maintenance-Tracker?branch=api-develop)
+
 
 ## Download and Installation
 * Download repository zip(https://github.com/asamisellah/Maintenance-Tracker) 
