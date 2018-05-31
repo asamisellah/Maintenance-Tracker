@@ -3,33 +3,44 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 
-requests = {}
+requests = []
 
-users = {}
+users = []
 
 
 # POST a user
-@app.route('/users', methods=['POST'])
+@app.route('/api/v1/users', methods=['POST'])
 def create_user():
     user = {
         "username": request.json.get("username"),
         "email": request.json.get('email'),
         "password": request.json.get("password"),
-        "cconfirm_password": request.json.get('cconfirm_password'),
+        "confirm_password": request.json.get('confirm_password')
     }
-    users.update(user)
+    users.append(user)
     return jsonify({"users": users}), 201
 
 
-# GET a user
-@app.route('/users/<string:userId>')
-def get_user(userId):
-    user = [user for user in users if user["id"] == userId]
+# Sign in a user
+@app.route('/api/v1/users/signin', methods=['POST'])
+def signin_user():
+    username = request.json.get("username")
+    password = request.json.get("password")
+    user = [user for user in users if user["username"] == username]
     if len(user) == 0:
-        return jsonify({"message": "Not Found"}), 404
-
+        return({"message": "User Not Found"}), 404
     else:
-        return jsonify({"user": user}), 200
+        if user["password"] == password:
+            return({"message": "User Successfully Logged in"})
+        else:
+            return({"message": "Wrong Username or Password"})
+
+    # user = [user for user in users if user["username"] == userId]
+    # if len(user) == 0:
+    #     return jsonify({"message": "Not Found"}), 404
+
+    # else:
+    #     return jsonify({"user": user}), 200
 
 
 # POST a request
@@ -64,8 +75,6 @@ def get_request(requestId):
 @app.route('/users/requests')
 def get_requests():
     return jsonify({"requests": requests})
-
-
 
 
 # UPDATE(PUT) a request
