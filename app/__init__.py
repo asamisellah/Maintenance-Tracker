@@ -56,23 +56,28 @@ def create_request():
     return jsonify({"message": "Request Created Successfully!"}), 201
 
 
-# GET a request
-@app.route('/users/requests/<string:requestId>')
-def get_request(requestId):
-    for id in requests:
-        if id == requestId:
-            request_data = requests[id]
-    if len(request_data) == 0:
-        return jsonify({"message": "Not Found"}), 404
-
-    else:
-        return jsonify({"request": request_data}), 200
-
-
 # GET all requests
-@app.route('/users/requests')
+@app.route('/api/v1/users/requests')
 def get_requests():
     return jsonify({"requests": requests})
+
+
+# # GET a request
+# @app.route('/api/v1/users/requests/<string:requestId>')
+# def get_request(requestId):
+#     for id in requests:
+#         if id == requestId:
+#             request_data = requests[id]
+#     if len(request_data) == 0:
+#         return jsonify({"message": "Not Found,
+#                         "id": "1",
+#                         "title": "Fixes",
+#                         "description": "Leaking pipe",
+#                         "type": "request",
+#                         "category": "fix""}), 404
+
+#     else:
+#         return jsonify({"request": request_data}), 200
 
 
 # UPDATE(PUT) a request
