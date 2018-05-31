@@ -35,7 +35,6 @@ def get_user(userId):
 # POST a request
 @app.route('/users/requests', methods=['POST'])
 def create_request():
-    # "id" = request.json.get("id")
     request_data = {request.json.get("id"): {
         "title": request.json.get("title"),
         "type": request.json.get('type'),
@@ -50,9 +49,11 @@ def create_request():
 # GET a request
 @app.route('/users/requests/<string:requestId>')
 def get_request(requestId):
-    for id in requests:
-        if id == requestId:
-            request_data = requests[id]
+    # for id in requests:
+    #     if id == requestId:
+    #         request_data = requests[id]
+    request_data = requests[requestId]
+
     if len(request_data) == 0:
         return jsonify({"message": "Not Found"}), 404
 

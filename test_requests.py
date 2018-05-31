@@ -11,22 +11,21 @@ class TestRequests(unittest.TestCase):
         "description": "Some description",
         "category": "Plumbing",
         "area": "Block A"
-
     }
 
     def setUp(self):
         app.config["TESTING"] = True
         self.client = app.test_client()
 
-    def test_create_request(self):
-        res = self.client.post('/users/requests',
-                               data=json.dumps(dict(TestRequests.request)),
-                               content_type='application/json')
-        self.assertEqual(res.status_code, 201)
+    # def test_create_request(self):
+    #     res = self.client.post('/users/requests',
+    #                            data=json.dumps(dict(TestRequests.request)),
+    #                            content_type='application/json')
+    #     self.assertEqual(res.status_code, 201)
 
-    # def test_get_request(self):
-    #     res = self.client.get('/users/requests/1')
-    #     self.assertEqual(res.status_code, 200)
+    def test_get_request(self):
+        res = self.client.get('/users/requests/1')
+        self.assertEqual(res.status_code, 200)
 
     # def test_update_request(self):
     #     res = self.client.put('/users/requests/1', data=self.request)
