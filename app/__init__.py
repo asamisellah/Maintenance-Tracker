@@ -3,12 +3,12 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 
-requests = [{}]
+requests = {}
 
-users = [{}]
+users = {}
 
 
-# POST a user that belongs to logged in user
+# POST a user
 @app.route('/users', methods=['POST'])
 def create_user():
     user = {
@@ -17,7 +17,7 @@ def create_user():
         "password": request.json.get("password"),
         "cconfirm_password": request.json.get('cconfirm_password'),
     }
-    users.append(user)
+    users.update(user)
     return jsonify({"users": users}), 201
 
 
@@ -29,73 +29,69 @@ def get_user(userId):
         return jsonify({"message": "Not Found"}), 404
 
     else:
-        return jsonify({"user": user})
+        return jsonify({"user": user}), 200
 
 
 # GET all requests that belong to a logged in user
-@app.route('/requests')
+@app.route('/users/requests')
 def get_requests():
-    return jsonify({"request": requests})
+    return jsonify({"requests": requests})
 
 
 # GET a request that belong to a logged in user
 @app.route('/users/requests/<string:requestId>')
 def get_request(requestId):
-    request = [request for request in requests if request["id"] == requestId]
+    request_data = [
+        request_data for request_data in requests if request["id"] == requestId
+    ]
     if len(request) == 0:
         return jsonify({"message": "Not Found"}), 404
 
     else:
-        return jsonify({"request": request})
-
-
-# GET a request that belongs to a logged in user
-@app.route('/users/requests/<string:requestId>')
-def get_request(requestId):
-    request = [request for request in requests if request["id"] == requestId]
-    if len(request) == 0:
-        return jsonify({"message": "Not Found"}), 404
-
-    else:
-        return jsonify({"request": request})
+        return jsonify({"request": request_data})
 
 
 # POST a request that belongs to logged in user
 @app.route('/users/requests', methods=['POST'])
 def create_request():
-    request_data = {
+    # "id" = request.json.get("id")
+    request_data = {request.json.get("id"): {
         "title": request.json.get("title"),
         "type": request.json.get('type'),
         "description": request.json.get("description"),
-        "category": request.json.get('category'),
-    }
-    requests.append(request)
+        "category": request.json.get('category')
+    }}
+    requests.update(request_data)
     return jsonify({"requests": requests}), 201
 
 
 # UPDATE(PUT) a request that belongs to logged in user
-@app.route('/users/requests/<string:requestId>', methods=['PUT'])
+@app.route('/users/requests/<int:requestId>', methods=['PUT'])
 def modify_request(requestId):
-    request = [request for request in requests if requests["id"] == requestId]
-    if len(request) == 0:
-        return jsonify({"message": "Not Found"})
+    for id in requests:
+        if id == requestId:
+            request_data = requests[id]
+
+    # if len(request_data) == 0:
+    #     return jsonify({"message": "Not Found"})
+
     else:
-        request = {
+        request_data = {
             "title": request.json.get("title"),
             "type": request.json.get('type'),
             "description": request.json.get("description"),
             "category": request.json.get('category'),
             "area": request.json.get('area')
         }
-        
-        requests.append(request)
-        return jsonify({"request": request}), 201
+        return jsonify({"request": request_data}), 201
 
 
 # DELETE a request made by a logged in user
 @app.route('/users/requests/<string:requestId>', methods=['DELETE'])
 def delete_request(requestId):
-    request = [request for request in requests if request["id"] == requestId]
-    print(request[0])
-    requests.remove(request[0])
+    for id in requests:
+        if id == requestId:
+            request_data = requests[id]
+    # print(request[0])
+    requests.pop(request_data)
     return jsonify({"request": requests}), 204

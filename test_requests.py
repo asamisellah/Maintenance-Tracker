@@ -3,11 +3,13 @@ import unittest
 
 
 class TestRequests(unittest.TestCase):
-    request = {"title": "Leaking Pipe",
-                   "type": "Repair",
-                   "description": "Some description",
-                   "category": "Plumbing",
-                   "area": "Block A"}
+    request = {
+        "title": "Leaking Pipe",
+        "type": "Repair",
+        "description": "Some description",
+        "category": "Plumbing",
+        "area": "Block A"
+        }
 
     def setUp(self):
         app.config["TESTING"] = True
