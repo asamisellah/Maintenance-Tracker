@@ -32,26 +32,7 @@ def get_user(userId):
         return jsonify({"user": user}), 200
 
 
-# GET all requests that belong to a logged in user
-@app.route('/users/requests')
-def get_requests():
-    return jsonify({"requests": requests})
-
-
-# GET a request that belong to a logged in user
-@app.route('/users/requests/<string:requestId>')
-def get_request(requestId):
-    request_data = [
-        request_data for request_data in requests if request["id"] == requestId
-    ]
-    if len(request) == 0:
-        return jsonify({"message": "Not Found"}), 404
-
-    else:
-        return jsonify({"request": request_data})
-
-
-# POST a request that belongs to logged in user
+# POST a request
 @app.route('/users/requests', methods=['POST'])
 def create_request():
     # "id" = request.json.get("id")
@@ -59,13 +40,35 @@ def create_request():
         "title": request.json.get("title"),
         "type": request.json.get('type'),
         "description": request.json.get("description"),
-        "category": request.json.get('category')
+        "category": request.json.get('category'),
+        "area": request.json.get('area')
     }}
     requests.update(request_data)
     return jsonify({"requests": requests}), 201
 
 
-# UPDATE(PUT) a request that belongs to logged in user
+# GET a request
+@app.route('/users/requests/<string:requestId>')
+def get_request(requestId):
+    for id in requests:
+        if id == requestId:
+            request_data = requests[id]
+    if len(request_data) == 0:
+        return jsonify({"message": "Not Found"}), 404
+
+    else:
+        return jsonify({"request": request_data}), 200
+
+
+# GET all requests
+@app.route('/users/requests')
+def get_requests():
+    return jsonify({"requests": requests})
+
+
+
+
+# UPDATE(PUT) a request
 @app.route('/users/requests/<int:requestId>', methods=['PUT'])
 def modify_request(requestId):
     for id in requests:
@@ -86,7 +89,7 @@ def modify_request(requestId):
         return jsonify({"request": request_data}), 201
 
 
-# DELETE a request made by a logged in user
+# DELETE a request
 @app.route('/users/requests/<string:requestId>', methods=['DELETE'])
 def delete_request(requestId):
     for id in requests:
