@@ -18,7 +18,7 @@ def create_user():
         "confirm_password": request.json.get('confirm_password')
     }
     users.append(user)
-    return jsonify({"users": users}), 201
+    return jsonify({"message": "Sign up successful!"}), 201
 
 
 # Sign in a user
@@ -34,26 +34,26 @@ def signin_user():
 
     if len(current_user) != 0:
         if current_user[0]["password"] == password:
-            return jsonify({"message": current_user[0]})
+            return jsonify({"message": "Sign in Successful!"}), 202
         else:
-            return jsonify({"message": "Wrong username or passwor"})
+            return jsonify({"message": "Wrong username or password"}), 401
     else:
-        return jsonify({"message": "username does not exist"})
+        return jsonify({"message": "username does not exist"}), 404
 
 
 # POST a request
-@app.route('/users/requests', methods=['POST'])
+@app.route('/api/v1/users/requests', methods=['POST'])
 def create_request():
-    # "id" = request.json.get("id")
-    request_data = {request.json.get("id"): {
+    request_data = {
+        "id": len(requests),
         "title": request.json.get("title"),
         "type": request.json.get('type'),
         "description": request.json.get("description"),
         "category": request.json.get('category'),
         "area": request.json.get('area')
-    }}
-    requests.update(request_data)
-    return jsonify({"requests": requests}), 201
+    }
+    requests.append(request_data)
+    return jsonify({"message": "Request Created Successfully!"}), 201
 
 
 # GET a request

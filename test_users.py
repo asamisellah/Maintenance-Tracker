@@ -14,11 +14,17 @@ class TestUsers(unittest.TestCase):
     def setUp(self):
         self.client = app.test_client()
 
-    def test_signin_user(self):
+    def test_create_user(self):
         res = self.client.post('/api/v1/users',
                                data=json.dumps(dict(TestUsers.user)),
                                content_type='application/json')
         self.assertEqual(res.status_code, 201)
+
+    def test_signin_user(self):
+        res = self.client.post('/api/v1/users/signin',
+                               data=json.dumps(dict(TestUsers.user)),
+                               content_type='application/json')
+        self.assertEqual(res.status_code, 202)
 
     # # Test for edge-cases
     # def test_blank_registration(self):
