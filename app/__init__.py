@@ -19,23 +19,23 @@ def get_users():
 def create_user():
     new_user = {
         "id": len(users),
-        "username": request.json.get("username"),
+        "username": request.json.get("username", "username"),
         "email": request.json.get('email'),
         "password": request.json.get("password"),
     }
     # Confirm user entry has data
     for key in new_user:
-        if new_user[key] is None:
-            return jsonify({"message": "All fields Required"})
+        if new_user[key] == "":
+            return jsonify({"message": "All Fields Required"})
 
     # Check if passwords match
     if request.json.get("password") != request.json.get("confirm_password"):
-        return jsonify({"message": "Your Passwords Don't Match"})
+        return jsonify({"message": "Your Passwords Don't Match"}), 400
     if len(users) == 0:
         users.append(new_user)
         return jsonify({"message": "Sign Up Successful"}), 201
     for user in users:
-        if user["email"] != new_user["email"]:
+        if user["username"] != new_user["username"]:
             users.append(new_user)
             return jsonify({"message": "Sign Up Successful"}), 201
         return jsonify({"message": "User already exists"}), 400
@@ -51,14 +51,12 @@ def signin_user():
     for user in users:
         if user["username"] == username:
             current_user.append(user)
-
     if len(current_user) != 0:
         if current_user[0]["password"] == password:
             return jsonify({"message": "Sign in Successful!"}), 202
         else:
             return jsonify({"message": "Wrong username or password"}), 401
-    else:
-        return jsonify({"message": "username does not exist"}), 404
+    return jsonify({"message": "User Not Found"}), 404
 
 
 # POST a request
@@ -96,28 +94,27 @@ def get_request(requestId):
 
 
 # UPDATE(PUT) a request
-@app.route('/users/requests/<int:requestId>', methods=['PUT'])
+@app.route('/api/v1/users/requests/<int:requestId>', methods=['PUT'])
 def modify_request(requestId):
-    for id in requests:
-        if id == requestId:
-            request_data = requests[id]
+    request_data = []
+    for request in requests:
+        if request["id"] == requestId:
+            request_data.append(request)
 
-    # if len(request_data) == 0:
-    #     return jsonify({"message": "Not Found"})
+    if len(request_data) != 0:
+        request_data[0]["id"] = requestId
+        request_data[0]["title"] = request.json.get("title")
+        request_data[0]["type"] = request.json.get("type")
+        request_data[0]["description"] = request.json.get("description")
+        request_data[0]["category"] = request.json.get("category")
+        request_data[0]["area"] = request.json.get("area")
 
-    else:
-        request_data = {
-            "title": request.json.get("title"),
-            "type": request.json.get('type'),
-            "description": request.json.get("description"),
-            "category": request.json.get('category'),
-            "area": request.json.get('area')
-        }
-        return jsonify({"request": request_data}), 201
+        return jsonify({"request": request_data[0]}), 201
+    return jsonify({"message": "Not Found"})
 
 
 # DELETE a request
-@app.route('/users/requests/<string:requestId>', methods=['DELETE'])
+@app.route('/api/v1/users/requests/<string:requestId>', methods=['DELETE'])
 def delete_request(requestId):
     for id in requests:
         if id == requestId:
