@@ -3,69 +3,96 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 
-requests = {}
+requests = []
 
-users = {}
+users = []
+
+
+# GET users
+@app.route('/api/v1/users')
+def get_users():
+    return jsonify({"users": users})
 
 
 # POST a user
-@app.route('/users', methods=['POST'])
+@app.route('/api/v1/users', methods=['POST'])
 def create_user():
-    user = {
+    new_user = {
+        "id": len(users),
         "username": request.json.get("username"),
         "email": request.json.get('email'),
         "password": request.json.get("password"),
-        "cconfirm_password": request.json.get('cconfirm_password'),
     }
-    users.update(user)
-    return jsonify({"users": users}), 201
+    # Confirm user entry has data
+    for key in new_user:
+        if new_user[key] is None:
+            return jsonify({"message": "All fields Required"})
+
+    # Check if passwords match
+    if request.json.get("password") != request.json.get("confirm_password"):
+        return jsonify({"message": "Your Passwords Don't Match"})
+    if len(users) == 0:
+        users.append(new_user)
+        return jsonify({"message": "Sign Up Successful"}), 201
+    for user in users:
+        if user["email"] != new_user["email"]:
+            users.append(new_user)
+            return jsonify({"message": "Sign Up Successful"}), 201
+        return jsonify({"message": "User already exists"}), 400
 
 
-# GET a user
-@app.route('/users/<string:userId>')
-def get_user(userId):
-    user = [user for user in users if user["id"] == userId]
-    if len(user) == 0:
-        return jsonify({"message": "Not Found"}), 404
+# Sign in a user
+@app.route('/api/v1/users/signin', methods=['POST'])
+def signin_user():
+    username = request.json.get("username")
+    password = request.json.get("password")
+    current_user = []
 
+    for user in users:
+        if user["username"] == username:
+            current_user.append(user)
+
+    if len(current_user) != 0:
+        if current_user[0]["password"] == password:
+            return jsonify({"message": "Sign in Successful!"}), 202
+        else:
+            return jsonify({"message": "Wrong username or password"}), 401
     else:
-        return jsonify({"user": user}), 200
+        return jsonify({"message": "username does not exist"}), 404
 
 
 # POST a request
-@app.route('/users/requests', methods=['POST'])
+@app.route('/api/v1/users/requests', methods=['POST'])
 def create_request():
-    # "id" = request.json.get("id")
-    request_data = {request.json.get("id"): {
+    request_data = {
+        "id": len(requests),
         "title": request.json.get("title"),
         "type": request.json.get('type'),
         "description": request.json.get("description"),
         "category": request.json.get('category'),
         "area": request.json.get('area')
-    }}
-    requests.update(request_data)
-    return jsonify({"requests": requests}), 201
-
-
-# GET a request
-@app.route('/users/requests/<string:requestId>')
-def get_request(requestId):
-    for id in requests:
-        if id == requestId:
-            request_data = requests[id]
-    if len(request_data) == 0:
-        return jsonify({"message": "Not Found"}), 404
-
-    else:
-        return jsonify({"request": request_data}), 200
+    }
+    requests.append(request_data)
+    return jsonify({"message": "Request Created Successfully!"}), 201
 
 
 # GET all requests
-@app.route('/users/requests')
+@app.route('/api/v1/users/requests')
 def get_requests():
     return jsonify({"requests": requests})
 
 
+# GET a request
+@app.route('/api/v1/users/requests/<int:requestId>')
+def get_request(requestId):
+    current_request = []
+    for request in requests:
+        if request["id"] == requestId:
+            current_request.append(request)
+
+    if len(current_request) != 0:
+        return jsonify({"request": current_request[0]}), 200
+    return jsonify({"message": "Request not found"}), 404
 
 
 # UPDATE(PUT) a request
