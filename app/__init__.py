@@ -65,10 +65,14 @@ def get_requests():
 # GET a request
 @app.route('/api/v1/users/requests/<int:requestId>')
 def get_request(requestId):
-    request = [request for request in requests if request["id"] == requestId]
-    if len(request) != 0:
-        return jsonify({"request": request[0]})
-    return({"message": "Request Not Found"})
+    current_request = []
+    for request in requests:
+        if request["id"] == requestId:
+            current_request.append(request)
+
+    if len(current_request) != 0:
+        return jsonify({"request": current_request[0]}), 200
+    return jsonify({"message": "Request not found"}), 404
 
 
 # UPDATE(PUT) a request
