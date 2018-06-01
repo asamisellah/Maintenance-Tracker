@@ -8,17 +8,37 @@ requests = []
 users = []
 
 
+# GET users
+@app.route('/api/v1/users')
+def get_users():
+    return jsonify({"users": users})
+
+
 # POST a user
 @app.route('/api/v1/users', methods=['POST'])
 def create_user():
-    user = {
+    new_user = {
+        "id": len(users),
         "username": request.json.get("username"),
         "email": request.json.get('email'),
         "password": request.json.get("password"),
-        "confirm_password": request.json.get('confirm_password')
     }
-    users.append(user)
-    return jsonify({"message": "Sign up successful!"}), 201
+    # Confirm user entry has data
+    for key in new_user:
+        if new_user[key] is None:
+            return jsonify({"message": "All fields Required"})
+
+    # Check if passwords match
+    if request.json.get("password") != request.json.get("confirm_password"):
+        return jsonify({"message": "Your Passwords Don't Match"})
+    if len(users) == 0:
+        users.append(new_user)
+        return jsonify({"message": "Sign Up Successful"}), 201
+    for user in users:
+        if user["email"] != new_user["email"]:
+            users.append(new_user)
+            return jsonify({"message": "Sign Up Successful"}), 201
+        return jsonify({"message": "User already exists"}), 400
 
 
 # Sign in a user
@@ -45,7 +65,7 @@ def signin_user():
 @app.route('/api/v1/users/requests', methods=['POST'])
 def create_request():
     request_data = {
-        "id": len(requests)+1,
+        "id": len(requests),
         "title": request.json.get("title"),
         "type": request.json.get('type'),
         "description": request.json.get("description"),
