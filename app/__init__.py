@@ -45,7 +45,7 @@ def signin_user():
 @app.route('/api/v1/users/requests', methods=['POST'])
 def create_request():
     request_data = {
-        "id": len(requests),
+        "id": len(requests)+1,
         "title": request.json.get("title"),
         "type": request.json.get('type'),
         "description": request.json.get("description"),
@@ -62,22 +62,13 @@ def get_requests():
     return jsonify({"requests": requests})
 
 
-# # GET a request
-# @app.route('/api/v1/users/requests/<string:requestId>')
-# def get_request(requestId):
-#     for id in requests:
-#         if id == requestId:
-#             request_data = requests[id]
-#     if len(request_data) == 0:
-#         return jsonify({"message": "Not Found,
-#                         "id": "1",
-#                         "title": "Fixes",
-#                         "description": "Leaking pipe",
-#                         "type": "request",
-#                         "category": "fix""}), 404
-
-#     else:
-#         return jsonify({"request": request_data}), 200
+# GET a request
+@app.route('/api/v1/users/requests/<int:requestId>')
+def get_request(requestId):
+    request = [request for request in requests if request["id"] == requestId]
+    if len(request) != 0:
+        return jsonify({"request": request[0]})
+    return({"message": "Request Not Found"})
 
 
 # UPDATE(PUT) a request
