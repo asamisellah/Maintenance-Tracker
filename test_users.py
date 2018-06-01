@@ -22,37 +22,42 @@ class TestUsers(unittest.TestCase):
         }
 
     def test_create_user(self):
-        res = self.client.post('/api/v1/users',
-                               data=json.dumps(dict(self.data["user"])),
-                               content_type='application/json')
+        res = self.client.post(
+            '/api/v1/users',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
         self.assertEqual(res.status_code, 201)
+      
+    def test_signin_user(self):
+        res = self.client.post(
+            '/api/v1/users/signin',
+            data=json.dumps(dict(self.data["auth"])),
+            content_type='application/json'
+            )
+        self.assertEqual(res.status_code, 202)
 
-    def test_empty_dict(self):
-        res = self.client.post('/api/v1/users',
-                               data=json.dumps(dict({})),
-                               content_type='application/json')
+    def test_empty_field(self):
+        self.data["user"]["username"] = ""
+        res = self.client.post(
+            '/api/v1/users',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
         self.assertEqual(res.status_code, 200)
 
     def test_confirm_password(self):
-        res = self.client.post('/api/v1/users',
-                               data=json.dumps(dict()),
-                               content_type='application/json')
-        self.assertEqual(res.status_code, 200)
+        self.data["user"]["confirm_password"] = "random"
+        res = self.client.post(
+            '/api/v1/users',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 400)
 
-    def test_signin_user(self):
-        res = self.client.post('/api/v1/users/signin',
-                               data=json.dumps(dict(self.data["auth"])),
-                               content_type='application/json')
-        self.assertEqual(res.status_code, 202)
-
-    # # Test for edge-cases
-    # def test_blank_registration(self):
-    #     res = self.client.post('/register', data="")
-    #     self.assertEqual(res.status_code, 400)
-
-    # def test_signin_unregistered_user(self):
-    #     res = self.client.post('/sign_in', data=self.users)
-    #     self.assertEqual(res.status_code, 401)
+    def test_signin_unregistered_user(self):
+        res = self.client.post('/api/v1/sign_in', data=self.data["auth"])
+        self.assertEqual(res.status_code, 404)
 
 
 if __name__ == "__main__":
