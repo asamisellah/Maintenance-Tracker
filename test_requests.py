@@ -22,7 +22,7 @@ class TestRequests(unittest.TestCase):
             '/api/v1/users/requests',
             data=json.dumps(dict(self.request)),
             content_type='application/json'
-            )
+        )
         self.assertEqual(res.status_code, 201)
 
     def test_get_requests(self):
@@ -30,11 +30,13 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_get_request(self):
+        res = self.client.post(
+            '/api/v1/users/requests',
+            data=json.dumps(dict(self.request)),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 201)
         res = self.client.get('/api/v1/users/requests/0')
-        self.assertEqual(res.status_code, 200)
-
-    def test_update_request(self):
-        res = self.client.put('/api/v1/users/requests/0', data=self.request)
         self.assertEqual(res.status_code, 200)
 
     def test_delete_request(self):
