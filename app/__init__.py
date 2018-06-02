@@ -103,13 +103,18 @@ def update_request(request_id):
             request_data.append(user_request)
 
     if len(request_data) != 0:
-        request_data[0]["title"] = request.get_json("title")
-        request_data[0]["type"] = request.get_json("type")
-        request_data[0]["description"] = request.get_json("description")
-        request_data[0]["category"] = request.get_json("category")
-        request_data[0]["area"] = request.get_json("area")
+        request_data[0]["title"] = request.json.get(
+            "title", request_data[0]["title"])
+        request_data[0]["type"] = request.json.get(
+            "type", request_data[0]["type"])
+        request_data[0]["description"] = request.json.get(
+            "description", request_data[0]["description"])
+        request_data[0]["category"] = request.json.get(
+            "category", request_data[0]["category"])
+        request_data[0]["area"] = request.json.get(
+            "area", request_data[0]["area"])
 
-        return jsonify({"requests": requests}), 201
+        return jsonify({"requests": requests}), 200
     return jsonify({"message": "Not Found"})
 
 
