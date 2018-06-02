@@ -77,16 +77,17 @@ def create_request():
 # GET all requests
 @app.route('/api/v1/users/requests')
 def get_requests():
+    print(requests)
     return jsonify({"requests": requests})
 
 
 # GET a request
-@app.route('/api/v1/users/requests/<int:requestId>')
-def get_request(requestId):
+@app.route('/api/v1/users/requests/<int:request_id>')
+def get_request(request_id):
     current_request = []
-    for request in requests:
-        if request["id"] == requestId:
-            current_request.append(request)
+    for _request in requests:
+        if _request["id"] == request_id:
+            current_request.append(_request)
 
     if len(current_request) != 0:
         return jsonify({"request": current_request[0]}), 200
@@ -94,31 +95,32 @@ def get_request(requestId):
 
 
 # UPDATE(PUT) a request
-@app.route('/api/v1/users/requests/<int:requestId>', methods=['PUT'])
-def modify_request(requestId):
+@app.route('/api/v1/users/requests/<int:request_id>', methods=['PUT'])
+def update_request(request_id):
     request_data = []
-    for request in requests:
-        if request["id"] == requestId:
-            request_data.append(request)
+    for user_request in requests:
+        if user_request["id"] == request_id:
+            request_data.append(user_request)
 
     if len(request_data) != 0:
-        request_data[0]["id"] = requestId
-        request_data[0]["title"] = request.json.get("title")
-        request_data[0]["type"] = request.json.get("type")
-        request_data[0]["description"] = request.json.get("description")
-        request_data[0]["category"] = request.json.get("category")
-        request_data[0]["area"] = request.json.get("area")
+        request_data[0]["title"] = request.get_json("title")
+        request_data[0]["type"] = request.get_json("type")
+        request_data[0]["description"] = request.get_json("description")
+        request_data[0]["category"] = request.get_json("category")
+        request_data[0]["area"] = request.get_json("area")
 
-        return jsonify({"request": request_data[0]}), 201
+        return jsonify({"requests": requests}), 201
     return jsonify({"message": "Not Found"})
 
 
 # DELETE a request
-@app.route('/api/v1/users/requests/<string:requestId>', methods=['DELETE'])
-def delete_request(requestId):
-    for id in requests:
-        if id == requestId:
-            request_data = requests[id]
-    # print(request[0])
-    requests.pop(request_data)
-    return jsonify({"request": requests}), 204
+@app.route('/api/v1/users/requests/<int:request_id>', methods=['DELETE'])
+def delete_request(request_id):
+    print(request_id)
+    request_data = [
+        request for request in requests if request["id"] == request_id]
+    print(request_data)
+    if len(request_data) != 0:
+        requests.remove(request_data[0])
+        return jsonify({"message": "Successfully deleted"}), 204
+    return jsonify({"message": "Not Found"}), 404

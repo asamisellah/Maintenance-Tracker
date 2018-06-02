@@ -56,7 +56,7 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
 
     def test_signin_unregistered_user(self):
-        res = self.client.post('/api/v1/sign_in', data=self.data["auth"])
+        res = self.client.post('/api/v1/signin', data=self.data["auth"])
         self.assertEqual(res.status_code, 404)
 
 
