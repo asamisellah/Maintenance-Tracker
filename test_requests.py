@@ -38,8 +38,8 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
 
     def test_delete_request(self):
-        res = self.client.delete('/api/v1/users/request/0')
-        self.assertEqual(res.status_code, 200)
+        res = self.client.delete('/api/v1/users/requests/0')
+        self.assertEqual(res.status_code, 204)
 
 
 if __name__ == "__main__":
