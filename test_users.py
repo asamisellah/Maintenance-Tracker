@@ -28,13 +28,13 @@ class TestUsers(unittest.TestCase):
             content_type='application/json'
         )
         self.assertEqual(res.status_code, 201)
-      
+
     def test_signin_user(self):
         res = self.client.post(
             '/api/v1/users/signin',
             data=json.dumps(dict(self.data["auth"])),
             content_type='application/json'
-            )
+        )
         self.assertEqual(res.status_code, 202)
 
     def test_empty_field(self):
