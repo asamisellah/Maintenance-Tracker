@@ -6,8 +6,7 @@ app = Flask(__name__)
 requests = []
 users = []
 session_requests = []
-session = []
-user_id = ""
+session = {}
 
 
 # GET users
@@ -54,34 +53,44 @@ def signin_user():
             current_user.append(user)
     if len(current_user) != 0:
         if current_user[0]["password"] == password:
-            # Create user session
-            user_id = current_user[0]["username"]
-            session.append(user_id)
-            print(session)
+            """Create user session"""
+            session["user_id"] = username
             return jsonify({"message": "Sign in Successful!"}), 202
         else:
             return jsonify({"message": "Wrong username or password"}), 401
     return jsonify({"message": "User Not Found"}), 404
 
 
+# Sign out User
+@app.route('/api/v1/users/signout', methods=['POST'])
+def signout_user():
+    """Check if session is empty"""
+    if len(session) == 0:
+        return jsonify({"message": "You must be Signed in to Sign out"}), 403
+    session.pop("user_id", None)
+    return jsonify({"message": "Sign out Successful"}), 200
+
+
 # POST a request
 @app.route('/api/v1/users/requests', methods=['POST'])
 def create_request():
-    for user in session:
-        if user == user_id:
-            print(session)
-            request_data = {
-                "id": len(requests)+1,
-                "user_id": user_id,
-                "title": request.json.get("title"),
-                "type": request.json.get('type'),
-                "description": request.json.get("description"),
-                "category": request.json.get('category'),
-                "area": request.json.get('area')
-            }
-            requests.append(request_data)
-            return jsonify({"message": "Request Created Successfully!"}), 201
-        return jsonify({"message": "Sign In to view requests"})
+    if len(session) == 0:
+        return jsonify({"message": "Sign in to view requests"}), 403
+    user_id = session["user_id"]
+    if user_id in session["user_id"]:
+        print(session)
+        request_data = {
+            "id": len(requests)+1,
+            "user_id": user_id,
+            "title": request.json.get("title"),
+            "type": request.json.get('type'),
+            "description": request.json.get("description"),
+            "category": request.json.get('category'),
+            "area": request.json.get('area')
+        }
+        requests.append(request_data)
+        return jsonify({"message": "Request Created Successfully!"}), 201
+    return jsonify({"message": "Sign In to view requests"})
 
 
 # GET all requests
@@ -89,21 +98,23 @@ def create_request():
 def get_requests():
     if len(session) == 0:
         return jsonify({"message": "Sign in to view requests"}), 403
-    for user in session:
-        if user == user_id:
-            for request in requests:
-                if request["user_id"] == user_id:
-                    session_requests.append(request)
-            print(session_requests)
-            if len(session_requests) == 0:
-                return jsonify({"message": "No requests to display "})
-            return jsonify({"requests": session_requests})
-        return jsonify({"message": "Sign In to view requests"}), 403
+    user_id = session["user_id"]
+    if user_id in session["user_id"]:
+        for request in requests:
+            if request["user_id"] == user_id:
+                session_requests.append(request)
+        print(session_requests)
+        if len(session_requests) == 0:
+            return jsonify({"message": "No requests to display "})
+        return jsonify({"requests": session_requests})
+    return jsonify({"message": "Sign In to view requests"}), 403
 
 
 # GET a request
 @app.route('/api/v1/users/requests/<int:request_id>')
 def get_request(request_id):
+    if len(session) == 0:
+        return jsonify({"message": "Sign in to view a requests"}), 403
     user_id = session["user_id"]
     if user_id in session["user_id"]:
         current_request = []
@@ -119,6 +130,8 @@ def get_request(request_id):
 # UPDATE(PUT) a request
 @app.route('/api/v1/users/requests/<int:request_id>', methods=['PUT'])
 def update_request(request_id):
+    if len(session) == 0:
+        return jsonify({"message": "Sign in to update requests"}), 403
     user_id = session["user_id"]
     if user_id in session["user_id"]:
         request_data = []
@@ -146,14 +159,16 @@ def update_request(request_id):
 # DELETE a request
 @app.route('/api/v1/users/requests/<int:request_id>', methods=['DELETE'])
 def delete_request(request_id):
+    if len(session) == 0:
+        return jsonify({"message": "Sign in to detele requests"}), 403
     user_id = session["user_id"]
     if user_id in session["user_id"]:
-        print(request_id)
-        request_data = [
-            request for request in requests if request["id"] == request_id]
-        print(request_data)
+        request_data = []
+        for request in requests:
+            if request["id"] == request_id:
+                request_data.append(request)
         if len(request_data) != 0:
             requests.remove(request_data[0])
-            return jsonify({"message": "Successfully deleted"}), 204
+            return jsonify({"requests": requests}), 204
         return jsonify({"message": "Not Found"}), 404
-    return jsonify({"message": "Sign In to view requests"})
+    return jsonify({"message": "Sign In to view requests"}), 403

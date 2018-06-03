@@ -10,6 +10,7 @@ class TestRequests(unittest.TestCase):
         self.client = app.test_client()
         self.request = {
             "id": "1",
+            "user_id": "mary",
             "title": "Leaking Pipe",
             "type": "Repair",
             "description": "Some description",
