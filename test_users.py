@@ -46,6 +46,7 @@ class TestUsers(unittest.TestCase):
         )
         self.assertEqual(res.status_code, 200)
 
+    # Test if
     def test_confirm_password(self):
         self.data["user"]["confirm_password"] = "random"
         res = self.client.post(
