@@ -10,9 +10,8 @@ session = {}
 user_id = 1
 request_id = 1
 
+
 # GET users
-
-
 @app.route('/api/v1/users')
 def get_users():
     return jsonify({"users": users})
@@ -27,11 +26,11 @@ def create_user():
         "email": request.json.get('email'),
         "password": request.json.get("password")
     }
+    print(new_user)
     # Confirm user input has data
     for key in new_user:
         if new_user[key] == "":
-            return jsonify({"message": "All Fields Required"})
-
+            return jsonify({"message": "All Fields Required"}), 400
     # Confirm password
     if request.json.get("password") != request.json.get("confirm_password"):
         return jsonify({"message": "Your Passwords Don't Match"}), 400
@@ -77,7 +76,6 @@ def signout_user():
 def create_request():
     if len(session) != 0:
         user_id = session["user_id"]
-        print(user_id)
         request_data = {
             "id": str(uuid.uuid4()),
             "user_id": user_id,
@@ -116,7 +114,6 @@ def get_request(request_id):
         user_id = session["user_id"]
         request_data = []
         for request in requests:
-            print(request)
             if request["id"] == request_id:
                 request_data.append(request)
         if not request_data:
@@ -134,9 +131,9 @@ def update_request(request_id):
     if len(session) != 0:
         user_id = session["user_id"]
         request_data = []
-        for request in requests:
-            if request["id"] == request_id:
-                request_data.append(request)
+        for r in requests:
+            if r["id"] == request_id:
+                request_data.append(r)
         if request_data[0]["user_id"] == user_id:
             if len(request_data) != 0:
                 request_data[0]["title"] = request.json.get(
