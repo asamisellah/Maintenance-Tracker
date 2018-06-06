@@ -113,11 +113,11 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
 
     # Edge Cases
-    def test_unexisting_request(self):
+    def test_get_request_not_in_list(self):
         res = self.client.get('/api/v1/users/requests/747429723')
         self.assertEqual(res.status_code, 404)
 
-    def test__request(self):
+    def test_get_request_by_signned_out_user(self):
         # Sign-up, Sign-in and Create a request
         self.signup_and_signin_user()
         res = self.client.post(
