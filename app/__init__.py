@@ -23,7 +23,6 @@ def create_user():
         "email": request.json.get('email'),
         "password": request.json.get("password")
     }
-    print(new_user)
     # Confirm user input has data
     for key in new_user:
         if new_user[key] == "":
