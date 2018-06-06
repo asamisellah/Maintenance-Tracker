@@ -61,6 +61,7 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(res.status_code, 201)
 
     def test_get_requests(self):
+        self.signup_and_signin_user()
         res = self.client.get('/api/v1/users/requests')
         self.assertEqual(res.status_code, 200)
 
@@ -113,6 +114,29 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
 
     # Edge Cases
+    def test_get_request_not_in_list(self):
+        self.signup_and_signin_user()
+        res = self.client.get('/api/v1/users/requests/747429723')
+        self.assertEqual(res.status_code, 404)
+
+    def test_get_request_by_signned_out_user(self):
+        # Sign-up, Sign-in and Create a request
+        self.signup_and_signin_user()
+        res = self.client.post(
+            '/api/v1/users/requests',
+            data=json.dumps(dict(self.data["request"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 201)
+        request_id = json.loads(res.data.decode())['message']['id']
+
+        # Sign-out
+        res = self.client.post('/api/v1/users/signout')
+        self.assertEqual(res.status_code, 200)
+
+        # Get the request
+        res = self.client.get('/api/v1/users/requests/{}'.format(request_id))
+        self.assertEqual(res.status_code, 403)
 
 
 if __name__ == "__main__":

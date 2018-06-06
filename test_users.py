@@ -52,7 +52,7 @@ class TestUsers(unittest.TestCase):
         )
         self.assertEqual(res.status_code, 400)
 
-    # Test if
+    # Edge cases
     def test_confirm_password(self):
         self.data["user"]["confirm_password"] = "random"
         res = self.client.post(
@@ -77,6 +77,20 @@ class TestUsers(unittest.TestCase):
 
         res = self.client.post('/api/v1/signin', data=self.data["auth"])
         self.assertEqual(res.status_code, 404)
+
+    def test_same_user_registration(self):
+        self.client.post(
+            '/api/v1/users',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+
+        res = self.client.post(
+            '/api/v1/users',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 400)
 
 
 if __name__ == "__main__":
