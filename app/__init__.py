@@ -7,9 +7,6 @@ requests = []
 users = []
 session = {}
 
-user_id = 1
-request_id = 1
-
 
 # GET users
 @app.route('/api/v1/users')
