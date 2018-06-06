@@ -61,6 +61,7 @@ class TestRequests(unittest.TestCase):
         self.assertEqual(res.status_code, 201)
 
     def test_get_requests(self):
+        self.signup_and_signin_user()
         res = self.client.get('/api/v1/users/requests')
         self.assertEqual(res.status_code, 200)
 
@@ -114,6 +115,7 @@ class TestRequests(unittest.TestCase):
 
     # Edge Cases
     def test_get_request_not_in_list(self):
+        self.signup_and_signin_user()
         res = self.client.get('/api/v1/users/requests/747429723')
         self.assertEqual(res.status_code, 404)
 
