@@ -84,7 +84,7 @@ def create_request():
         }
         requests.append(request_data)
         return jsonify({"message": request_data}), 201
-    return jsonify({"message": "Sign In to view requests"}), 401
+    return jsonify({"message": "Sign In to make a requests"}), 401
 
 
 # GET all requests
@@ -159,10 +159,12 @@ def delete_request(request_id):
         for request in requests:
             if request["id"] == request_id:
                 request_data.append(request)
-        if request_data[0]["user_id"] == user_id:
-            if len(request_data) != 0:
+        if len(request_data) != 0:
+            if request_data[0]["user_id"] == user_id:
                 requests.remove(request_data[0])
-                return jsonify({"requests": "Request Successfully Deleted"}), 200
-            return jsonify({"message": "Not Found"}), 404
-        return jsonify({"message": "Cannot Access Request"}), 403
+                return jsonify({
+                    "requests": "Request Successfully Deleted"
+                }), 200
+            return jsonify({"message": "Cannot Access Request"}), 403
+        return jsonify({"message": "Not Found"}), 404
     return jsonify({"message": "Sign In to view requests"}), 403
