@@ -6,3 +6,4 @@ app/*.
 __pycache__/
 app/__init__.pyc
 app/app.pyc
+db_connect.pyc
