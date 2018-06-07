@@ -1,13 +1,15 @@
 from flask import Blueprint, jsonify, request
 from flask.views import MethodView
-from . import model
+from model import User
 
 users = Blueprint('users', __name__)
 
 
 @users.route('/api/v1/users')
 def create_user():
-    user = User("mary", "mary@email.com", "jvrygiw")
+    user = User(
+
+    )
     return user.create_user()
 
 
