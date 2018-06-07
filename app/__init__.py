@@ -7,8 +7,11 @@ requests = []
 users = []
 session = {}
 
+app.register_blueprint(users)
 
 # GET users
+
+
 @app.route('/api/v1/users')
 def get_users():
     return jsonify({"users": users})
