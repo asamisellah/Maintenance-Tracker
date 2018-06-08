@@ -6,6 +6,7 @@ from .model import User
 from db_connect import TrackerDB
 
 app = Flask(__name__)
+session = {}
 
 
 # GET users
@@ -48,12 +49,14 @@ def create_user():
 # Sign in a user
 @app.route('/api/v1/users/signin', methods=['POST'])
 def signin_user():
-    username = request.json.get("username")
-    password = request.json.get("password")
-    user = model.get_user(username)
+    _username = request.json.get("username")
+    _password = request.json.get("password")
+    user = model.get_user(_username)
 
     if user is not None:
-        if user["username"] == username and user["password"] == password:
+        if user["username"] == _username and user["password"] == _password:
+            """Create user session"""
+            session["username"] = user["username"]
             return jsonify({"message": "Sign in Successful!"}), 202
         return jsonify({"message": "Wrong username or password"}), 401
     return jsonify({"message": "User Not Found"}), 404
@@ -63,9 +66,10 @@ def signin_user():
 @app.route('/api/v1/users/signout', methods=['POST'])
 def signout_user():
     """Check if session is empty"""
+    print(session)
     if len(session) == 0:
         return jsonify({"message": "You must be Signed in to Sign out"}), 403
-    session.pop("user_id", None)
+    session.pop("username", None)
     return jsonify({"message": "Sign out Successful"}), 200
 
 
@@ -73,17 +77,14 @@ def signout_user():
 @app.route('/api/v1/users/requests', methods=['POST'])
 def create_request():
     if len(session) != 0:
-        user_id = session["user_id"]
         request_data = {
-            "id": str(uuid.uuid4()),
-            "user_id": user_id,
             "title": request.json.get("title"),
             "type": request.json.get('type'),
             "description": request.json.get("description"),
             "category": request.json.get('category'),
             "area": request.json.get('area')
         }
-        requests.append(request_data)
+
         return jsonify({"message": request_data}), 201
     return jsonify({"message": "Sign In to make a requests"}), 401
 

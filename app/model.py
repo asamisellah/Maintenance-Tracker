@@ -32,26 +32,32 @@ def get_user(username):
     return user
 
 
-# def update_user(username):
-#     db.cur.execute("SELECT user FROM users WHERE username == ")
-#     db.conn.commit()
-
-
 class UserRequest():
-    def __init__(self, id, title, description, type, category, area):
-        # self.id = count
+    def __init__(self, request_id, title, description, type, category, area):
         self.title = title
         self.description = description
         self.type = type
         self.category = category
         self.area = area
-        count += 1
 
     def create_request(self):
-        pass
+        db.cur.execute("""INSERT INTO requests(title, description, type, category, area)
+                VALUES(%s,%s,%s,%s,%s)""",
+                       (self.title,
+                        self.description,
+                        self.type,
+                        self.category,
+                        self.area))
+        db.conn.commit()
 
-    # def get_requests(self, id):
-    #     db.cur.execute("SELECT * FROM users")
-    #     db.conn.commit()
-    #     users = db.cur.fetchall()
-    #     return users
+
+def get_requests(self, id):
+    db.cur.execute("SELECT * FROM requests")
+    db.conn.commit()
+    users = db.cur.fetchall()
+    return users
+
+
+# def update_user(username):
+#     db.cur.execute("SELECT user FROM users WHERE username == ")
+#     db.conn.commit()
