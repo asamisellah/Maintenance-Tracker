@@ -1,11 +1,10 @@
+import json
 from flask import Flask, jsonify, request
+from psycopg2.extras import RealDictCursor
 import uuid
+from app.models import register_user, create_request
 
 app = Flask(__name__)
-
-requests = []
-users = []
-session = {}
 
 
 # GET users
@@ -15,25 +14,14 @@ def get_users():
 
 
 # POST a user
-@app.route('/api/v1/users', methods=['POST'])
+@app.route('/api/v1/users/signup', methods=['POST'])
 def create_user():
-    new_user = {
-        "user_id": str(uuid.uuid4()),
-        "username": request.json.get("username", "username"),
-        "email": request.json.get('email'),
-        "password": request.json.get("password")
-    }
-    # Confirm user input has data
-    for key in new_user:
-        if new_user[key] == "":
-            return jsonify({"message": "All Fields Required"}), 400
-    # Confirm password
-    if request.json.get("password") != request.json.get("confirm_password"):
-        return jsonify({"message": "Your Passwords Don't Match"}), 400
-    for user in users:
-        if user["username"] == new_user["username"]:
-            return jsonify({"message": "User already exists"}), 400
-    users.append(new_user)
+    data = request.get_json()
+    username = data["username"]
+    email = data["email"]
+    password = data["password"]
+
+    register_user(username, email, password)
     return jsonify({"message": "Sign Up Successful"}), 201
 
 
@@ -69,21 +57,16 @@ def signout_user():
 
 # POST a request
 @app.route('/api/v1/users/requests', methods=['POST'])
-def create_request():
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = {
-            "id": str(uuid.uuid4()),
-            "user_id": user_id,
-            "title": request.json.get("title"),
-            "type": request.json.get('type'),
-            "description": request.json.get("description"),
-            "category": request.json.get('category'),
-            "area": request.json.get('area')
-        }
-        requests.append(request_data)
-        return jsonify({"message": request_data}), 201
-    return jsonify({"message": "Sign In to make a requests"}), 401
+def _request():
+    data = request.get_json()
+    title = data["title"]
+    description = data["description"]
+    category = data["category"]
+    _type = data["_type"]
+    area = data["area"]
+
+    create_request(title, description, category, _type, area)
+    return jsonify({"message": "Request Created Successfully"}), 201
 
 
 # GET all requests
