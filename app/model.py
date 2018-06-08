@@ -6,7 +6,7 @@ db = TrackerDB()
 
 
 class User():
-    def __init__(self, user_id, username, email, password):
+    def __init__(self, username, email, password):
         self.username = username
         self.email = email
         self.password = password
@@ -33,7 +33,8 @@ def get_user(username):
 
 
 class UserRequest():
-    def __init__(self, title, description, _type, category, area):
+    def __init__(self, user_id, title, description, _type, category, area):
+        self.user_id = user_id
         self.title = title
         self.description = description
         self._type = _type
@@ -41,9 +42,10 @@ class UserRequest():
         self.area = area
 
     def create_request(self):
-        db.cur.execute("""INSERT INTO requests(title, description, type, category, area)
-                VALUES(%s,%s,%s,%s,%s)""",
-                       (self.title,
+        db.cur.execute("""INSERT INTO requests(user_id, title, description, type, category, area)
+                VALUES(%s,%s,%s,%s,%s,%s)""",
+                       (self.user_id,
+                        self.title,
                         self.description,
                         self._type,
                         self.category,
@@ -58,17 +60,18 @@ def get_all_requests():
     return users
 
 
-def get_user_requests(username):
+def get_user_requests(user_id):
     db.cur.execute(
-        "SELECT * FROM requests WHERE username = ( % s)", (username,))
+        "SELECT * FROM requests WHERE user_id = (%s)", (user_id,))
     db.conn.commit()
     requests = db.cur.fetchall()
     return requests
 
 
-def get_user_request(username):
+def get_user_request(request_id, user_id):
     db.cur.execute(
-        "SELECT * FROM requests WHERE username = ( % s)", (username,))
+        "SELECT * FROM requests WHERE user_id = (%s) AND id = (%s)",
+        (user_id, request_id,))
     db.conn.commit()
     _request = db.cur.fetchall()
     return _request
