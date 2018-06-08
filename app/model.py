@@ -1,24 +1,40 @@
-from db_connect import MyDatabase
+from db_connect import TrackerDB
 import psycopg2
+from psycopg2.extras import RealDictCursor
 
-db = MyDatabase()
+db = TrackerDB()
 
 
 class User():
-    def __init__(self, username, email, password):
+    def __init__(self, user_id, username, email, password):
         self.username = username
         self.email = email
         self.password = password
 
     def create_user(self):
-        db.query("""INSERT INTO users(username, email, password)
+        db.cur.execute("""INSERT INTO users(username, email, password)
                 VALUES(%s,%s,%s)""",
-                 (self.username, self.email, self.password,))
+                       (self.username, self.email, self.password,))
+        db.conn.commit()
 
-    def get_user(self, username):
-        db.query("SELECT * FROM users")
-        users = db.cur.fetchall()
-        print(users)
+
+def get_users():
+    db.cur.execute("SELECT * FROM users")
+    db.conn.commit()
+    users = db.cur.fetchall()
+    return users
+
+
+def get_user(username):
+    db.cur.execute("SELECT * FROM users WHERE USERNAME = (%s);", (username,))
+    db.conn.commit()
+    user = db.cur.fetchone()
+    return user
+
+
+# def update_user(username):
+#     db.cur.execute("SELECT user FROM users WHERE username == ")
+#     db.conn.commit()
 
 
 class UserRequest():
@@ -34,13 +50,8 @@ class UserRequest():
     def create_request(self):
         pass
 
-    def get_request(self, id):
-        pass
-
-
-def serialize(self):
-    return {
-        "username": self.username,
-        "email": self.email,
-        "password": self.password
-    }
+    # def get_requests(self, id):
+    #     db.cur.execute("SELECT * FROM users")
+    #     db.conn.commit()
+    #     users = db.cur.fetchall()
+    #     return users

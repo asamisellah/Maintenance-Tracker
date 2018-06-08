@@ -1,8 +1,9 @@
-from db_connect import MyDatabase
-import psycopg2
 import sys
+import psycopg2
 
-db = MyDatabase()
+from db_connect import TrackerDB
+
+db = TrackerDB()
 
 
 def main():
@@ -25,10 +26,11 @@ def main():
         )
             """)
         db.conn.commit()
+        db.conn.close()
     except psycopg2.Error:
         raise SystemExit("Failed {}".format(sys.exc_info()))
 
-        db.close()
+        db.conn.close()
 
 
 if __name__ == "__main__":

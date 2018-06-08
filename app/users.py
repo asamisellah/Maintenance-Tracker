@@ -2,10 +2,10 @@ from flask import Blueprint, jsonify, request
 from flask.views import MethodView
 from model import User
 
-users = Blueprint('users', __name__)
+users = Blueprint('users', __name__, url_prefix="/api/v1/users/")
 
 
-@users.route('/api/v1/users')
+@users.route("signup/")
 def create_user():
     user = User(
 

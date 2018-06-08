@@ -1,14 +1,19 @@
-import psycopg2
+from psycopg2 import connect
+from psycopg2.extras import RealDictCursor
+
+connection = {
+    "host": "localhost",
+    "database": "mtracker",
+    "user": "postgres",
+    "password": "db"
+}
 
 
-class MyDatabase():
-    def __init__(self,
-                 host="localhost",
-                 db="mtracker",
-                 user="postgres", password="db"):
-        self.conn = psycopg2.connect(
-            host=host, database=db, user=user, password=password)
-        self.cur = self.conn.cursor()
+class TrackerDB(object):
+
+    def __init__(self):
+        self.conn = connect(**connection)
+        self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
 
     def query(self, query):
         self.cur.execute(query)
