@@ -12,25 +12,27 @@ def main():
         db.query("""DROP TABLE IF EXISTS requests""")
 
         db.query("""CREATE TABLE users(
-            username varchar(255),
-            email varchar(255),
-            password varchar(255)
+            id serial PRIMARY KEY,
+            username VARCHAR(255),
+            email VARCHAR(255),
+            password VARCHAR(255),
+            admin_role BOOLEAN DEFAULT FALSE
         )
             """)
         db.query("""CREATE TABLE requests(
-            title varchar(255),
-            description varchar(255),
-            type varchar(255),
-            category varchar(255),
-            area varchar(255)
+            id serial PRIMARY KEY,
+            user_id integer,
+            title VARCHAR(255),
+            description VARCHAR(255),
+            type VARCHAR(255),
+            category VARCHAR(255),
+            area VARCHAR(255)
         )
             """)
         db.conn.commit()
         db.conn.close()
     except psycopg2.Error:
         raise SystemExit("Failed {}".format(sys.exc_info()))
-
-        db.conn.close()
 
 
 if __name__ == "__main__":
