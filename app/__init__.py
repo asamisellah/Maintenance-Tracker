@@ -5,13 +5,12 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
-from .model import User, UserRequest
+from .model import User, UserRequest, get_all_requests
 from db_connect import TrackerDB
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
+app.config['JWT_SECRET_KEY'] = 'super-secret'
 jwt = JWTManager(app)
-session = {}
 
 
 # GET users
@@ -54,68 +53,69 @@ def create_user():
 # Sign in a user
 @app.route('/api/v1/users/signin', methods=['POST'])
 def signin_user():
-    _username = request.json.get("username")
-    _password = request.json.get("password")
+    if not request.is_json:
+        return jsonify({"msg": "Missing JSON in request"}), 400
+    _username = request.json.get("username", None)
+    _password = request.json.get("password", None)
+
     user = model.get_user(_username)
 
     if user is not None:
         if user["username"] == _username and user["password"] == _password:
             """Create user session"""
             access_token = create_access_token(identity=_username)
-            session["username"] = user["username"]
             return jsonify({"message": "Sign in Successful!", "token": access_token}), 202
         return jsonify({"message": "Wrong username or password"}), 401
     return jsonify({"message": "User Not Found"}), 404
 
 
-# Sign out User
-@app.route('/api/v1/users/signout', methods=['POST'])
-def signout_user():
-    """Check if session is empty"""
-    print(session)
-    if len(session) == 0:
-        return jsonify({"message": "You must be Signed in to Sign out"}), 403
-    session.pop("username", None)
-    return jsonify({"message": "Sign out Successful"}), 200
+# # Sign out User
+# @app.route('/api/v1/users/signout', methods=['POST'])
+# @jwt_required
+# def signout_user():
+#     user = current_user
+#     user.authenticated = False
+
+#     """Check if session is empty"""
+#     print(session)
+#     if len(session) == 0:
+#         return jsonify({"message": "You must be Signed in to Sign out"}), 403
+#     session.pop("username", None)
+#     return jsonify({"message": "Sign out Successful"}), 200
 
 
 # POST a request
 @app.route('/api/v1/users/requests', methods=['POST'])
 @jwt_required
 def create_request():
-    if len(session) != 0:
-        request_data = UserRequest(
-            session["username"],
-            request.json.get("title"),
-            request.json.get('type'),
-            request.json.get("description"),
-            request.json.get('category'),
-            request.json.get('area')
-        )
-        request_data.create_request()
-        return jsonify({"message": model.get_requests()}), 201
-    return jsonify({"message": "Sign In to make a requests"}), 401
+    current_user = get_jwt_identity()
+    print(current_user)
+    request_data = UserRequest(
+        request.json.get("title"),
+        request.json.get('_type'),
+        request.json.get("description"),
+        request.json.get('category'),
+        request.json.get('area')
+    )
+    request_data.create_request()
+    return jsonify({"message": "Request Created Successfully"}), 201
 
 
 # GET all requests
 @app.route('/api/v1/users/requests')
+@jwt_required
 def get_requests():
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for request in requests:
-            if request["user_id"] == user_id:
-                request_data.append(request)
-        if len(request_data) == 0:
-            return jsonify({
-                "message": "You have no requests. Create a request"
-            }), 200
-        return jsonify({"requests": request_data}), 200
-    return jsonify({"message": "Sign In to view requests"}), 403
+    requests = get_all_requests()
+    if len(requests) == 0:
+        return jsonify({
+            "message": "You have no requests. Create a request"
+        }), 200
+    return jsonify({"requests": requests}), 200
 
 
 # GET a request
 @app.route('/api/v1/users/requests/<request_id>')
+@jwt_required
 def get_request(request_id):
     if len(session) != 0:
         user_id = session["user_id"]
@@ -134,6 +134,7 @@ def get_request(request_id):
 
 # UPDATE(PUT) a request
 @app.route('/api/v1/users/requests/<request_id>', methods=['PUT'])
+@jwt_required
 def update_request(request_id):
     if len(session) != 0:
         user_id = session["user_id"]
@@ -162,6 +163,7 @@ def update_request(request_id):
 
 # DELETE a request
 @app.route('/api/v1/users/requests/<request_id>', methods=['DELETE'])
+@jwt_required
 def delete_request(request_id):
     if len(session) != 0:
         user_id = session["user_id"]
