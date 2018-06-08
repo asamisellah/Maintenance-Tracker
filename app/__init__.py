@@ -1,11 +1,16 @@
 from flask import Flask, jsonify, request
 from psycopg2.extras import RealDictCursor
 import uuid
-from .model import User
-
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+from .model import User, UserRequest
 from db_connect import TrackerDB
 
 app = Flask(__name__)
+app.config['JWT_SECRET_KEY'] = 'super-secret'  # Change this!
+jwt = JWTManager(app)
 session = {}
 
 
@@ -56,8 +61,9 @@ def signin_user():
     if user is not None:
         if user["username"] == _username and user["password"] == _password:
             """Create user session"""
+            access_token = create_access_token(identity=_username)
             session["username"] = user["username"]
-            return jsonify({"message": "Sign in Successful!"}), 202
+            return jsonify({"message": "Sign in Successful!", "token": access_token}), 202
         return jsonify({"message": "Wrong username or password"}), 401
     return jsonify({"message": "User Not Found"}), 404
 
@@ -75,17 +81,19 @@ def signout_user():
 
 # POST a request
 @app.route('/api/v1/users/requests', methods=['POST'])
+@jwt_required
 def create_request():
     if len(session) != 0:
-        request_data = {
-            "title": request.json.get("title"),
-            "type": request.json.get('type'),
-            "description": request.json.get("description"),
-            "category": request.json.get('category'),
-            "area": request.json.get('area')
-        }
-
-        return jsonify({"message": request_data}), 201
+        request_data = UserRequest(
+            session["username"],
+            request.json.get("title"),
+            request.json.get('type'),
+            request.json.get("description"),
+            request.json.get('category'),
+            request.json.get('area')
+        )
+        request_data.create_request()
+        return jsonify({"message": model.get_requests()}), 201
     return jsonify({"message": "Sign In to make a requests"}), 401
 
 

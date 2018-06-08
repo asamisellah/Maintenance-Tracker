@@ -51,7 +51,7 @@ class UserRequest():
         db.conn.commit()
 
 
-def get_requests(self, id):
+def get_requests():
     db.cur.execute("SELECT * FROM requests")
     db.conn.commit()
     users = db.cur.fetchall()
