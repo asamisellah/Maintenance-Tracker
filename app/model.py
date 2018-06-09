@@ -1,6 +1,7 @@
 from db_connect import TrackerDB
-import psycopg2
 from psycopg2.extras import RealDictCursor
+from passlib.hash import pbkdf2_sha256 as sha256
+import psycopg2
 
 db = TrackerDB()
 
@@ -14,8 +15,17 @@ class User():
     def create_user(self):
         db.cur.execute("""INSERT INTO users(username, email, password)
                 VALUES(%s,%s,%s)""",
-                       (self.username, self.email, self.password,))
+                       (self.username, self.email,
+                        generate_hash(self.password),))
         db.conn.commit()
+
+
+def generate_hash(password):
+    return sha256.hash(password)
+
+
+def verify_hash(password, hash):
+    return sha256.verify(password, hash)
 
 
 def get_users():
