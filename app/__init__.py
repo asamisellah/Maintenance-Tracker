@@ -69,21 +69,6 @@ def signin_user():
     return jsonify({"message": "User Not Found"}), 404
 
 
-# # Sign out User
-# @app.route('/api/v1/users/signout', methods=['POST'])
-# @jwt_required
-# def signout_user():
-#     user = current_user
-#     user.authenticated = False
-
-#     """Check if session is empty"""
-#     print(session)
-#     if len(session) == 0:
-#         return jsonify({"message": "You must be Signed in to Sign out"}), 403
-#     session.pop("username", None)
-#     return jsonify({"message": "Sign out Successful"}), 200
-
-
 # POST a request
 @app.route('/api/v1/users/requests', methods=['POST'])
 @jwt_required
@@ -95,8 +80,8 @@ def create_request():
     request_data = UserRequest(
         user_id,
         request.json.get("title"),
-        request.json.get('_type'),
         request.json.get("description"),
+        request.json.get('_type'),
         request.json.get('category'),
         request.json.get('area')
     )
@@ -121,7 +106,7 @@ def user_get_requests():
 # GET a request of logged in user
 @app.route('/api/v1/users/requests/<request_id>')
 @jwt_required
-def get_request(request_id):
+def user_get_request(request_id):
     user_id = get_jwt_identity()
     user_request = get_user_request(user_id, request_id)
     if len(user_request) == 0:
@@ -131,45 +116,24 @@ def get_request(request_id):
     return jsonify({"request": user_request}), 200
 
 
-# GET all requests
-@app.route('/api/v1/requests')
-@jwt_required
-def get_requests():
-    requests = get_all_requests()
-    if len(requests) == 0:
-        return jsonify({
-            "message": "You have no requests. Create a request"
-        }), 200
-    return jsonify({"requests": requests}), 200
-
-
 # UPDATE(PUT) a request
 @app.route('/api/v1/users/requests/<request_id>', methods=['PUT'])
 @jwt_required
-def update_request(request_id):
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for r in requests:
-            if r["id"] == request_id:
-                request_data.append(r)
-        if request_data[0]["user_id"] == user_id:
-            if len(request_data) != 0:
-                request_data[0]["title"] = request.json.get(
-                    "title", request_data[0]["title"])
-                request_data[0]["type"] = request.json.get(
-                    "type", request_data[0]["type"])
-                request_data[0]["description"] = request.json.get(
-                    "description", request_data[0]["description"])
-                request_data[0]["category"] = request.json.get(
-                    "category", request_data[0]["category"])
-                request_data[0]["area"] = request.json.get(
-                    "area", request_data[0]["area"])
+def user_update_request(request_id):
+    user_id = get_jwt_identity()
 
-                return jsonify({"requests": request_data[0]}), 200
-            return jsonify({"message": "Request Not Found"}), 404
-        return jsonify({"message": "Cannot Access Request"}), 403
-    return jsonify({"message": "Sign In to view requests"}), 403
+    _request = update_request(request_id,
+                              user_id,
+                              request.json.get("title"),
+                              request.json.get("description"),
+                              request.json.get("_type"),
+                              request.json.get("category"),
+                              request.json.get("area")
+                              )
+    print(_request)
+    if len(_request) == 0:
+        return jsonify({"message": "Request Not Found"}), 404
+    return jsonify({"request": _request})
 
 
 # DELETE a request
@@ -191,3 +155,15 @@ def delete_request(request_id):
             return jsonify({"message": "Cannot Access Request"}), 403
         return jsonify({"message": "Not Found"}), 404
     return jsonify({"message": "Sign In to view requests"}), 403
+
+
+# GET all requests- Admin Priviledge
+@app.route('/api/v1/requests')
+@jwt_required
+def get_requests():
+    requests = get_all_requests()
+    if len(requests) == 0:
+        return jsonify({
+            "message": "You have no requests. Create a request"
+        }), 200
+    return jsonify({"requests": requests}), 200
