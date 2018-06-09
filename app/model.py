@@ -38,7 +38,7 @@ def get_users():
 def get_user_by_id(user_id):
     db.cur.execute("SELECT * FROM users WHERE id = (%s)", (user_id,))
     db.conn.commit()
-    users = db.cur.fetchall()
+    users = db.cur.fetchone()
     return users
 
 
@@ -59,8 +59,10 @@ class UserRequest():
         self.area = area
 
     def create_request(self):
-        db.cur.execute("""INSERT INTO requests(user_id, title, description, type, category, area)
-                VALUES(%s,%s,%s,%s,%s,%s)""",
+        db.cur.execute("""INSERT INTO
+                requests(user_id, title, description,
+                type, category, area, status)
+                VALUES(%s,%s,%s,%s,%s,%s,'pending')""",
                        (self.user_id,
                         self.title,
                         self.description,
@@ -77,12 +79,20 @@ def get_all_requests():
     return users
 
 
+def get_request(request_id):
+    db.cur.execute(
+        "SELECT * FROM requests WHERE id = (%s)", (request_id,))
+    db.conn.commit()
+    user_request = db.cur.fetchone()
+    return user_request
+
+
 def get_user_requests(user_id):
     db.cur.execute(
         "SELECT * FROM requests WHERE user_id = (%s)", (user_id,))
     db.conn.commit()
-    requests = db.cur.fetchall()
-    return requests
+    user_requests = db.cur.fetchall()
+    return user_requests
 
 
 def get_user_request(request_id, user_id):
@@ -90,8 +100,8 @@ def get_user_request(request_id, user_id):
         "SELECT * FROM requests WHERE user_id = (%s) AND id = (%s)",
         (user_id, request_id,))
     db.conn.commit()
-    _request = db.cur.fetchall()
-    return _request
+    user_request = db.cur.fetchone()
+    return user_request
 
 
 def update_request(request_id, user_id, title,
@@ -112,3 +122,10 @@ def delete_request(request_id, user_id):
     db.cur.execute("DELETE FROM requests WHERE id = (%s) AND user_id = (%s)",
                    (request_id, user_id,))
     db.conn.commit()
+
+
+def update_status(request_id, status):
+    db.cur.execute("UPDATE requests SET status = (%s) WHERE id = (%s)",
+                   (status, request_id,))
+    db.conn.commit()
+    return status
