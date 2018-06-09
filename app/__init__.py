@@ -121,43 +121,34 @@ def user_get_request(request_id):
 @jwt_required
 def user_update_request(request_id):
     user_id = get_jwt_identity()
-
-    _request = update_request(request_id,
-                              user_id,
-                              request.json.get("title"),
-                              request.json.get("description"),
-                              request.json.get("_type"),
-                              request.json.get("category"),
-                              request.json.get("area")
-                              )
-    print(_request)
-    if len(_request) == 0:
-        return jsonify({"message": "Request Not Found"}), 404
-    return jsonify({"request": _request})
+    user_request = get_user_request(request_id, user_id)
+    if len(user_request) != 0:
+        update_request(request_id,
+                       user_id,
+                       request.json.get("title"),
+                       request.json.get("description"),
+                       request.json.get("_type"),
+                       request.json.get("category"),
+                       request.json.get("area")
+                       )
+        return jsonify({"request": user_request}), 200
+        return jsonify({"message": "Update Successful"})
+    return jsonify({"message": "Request Not Found"}), 404
 
 
 # DELETE a request
 @app.route('/api/v1/users/requests/<request_id>', methods=['DELETE'])
 @jwt_required
-def delete_request(request_id):
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for request in requests:
-            if request["id"] == request_id:
-                request_data.append(request)
-        if len(request_data) != 0:
-            if request_data[0]["user_id"] == user_id:
-                requests.remove(request_data[0])
-                return jsonify({
-                    "requests": "Request Successfully Deleted"
-                }), 200
-            return jsonify({"message": "Cannot Access Request"}), 403
-        return jsonify({"message": "Not Found"}), 404
-    return jsonify({"message": "Sign In to view requests"}), 403
+def user_delete_request(request_id):
+    user_id = get_jwt_identity()
+    user_request = get_user_request(request_id, user_id)
+    if len(user_request) != 0:
+        delete_request(request_id, user_id)
+        return jsonify({"message": "Delete Successful"}), 200
+    return jsonify({"message": "Request Not Found"}), 404
 
 
-# GET all requests- Admin Priviledge
+# GET all requests- Admin Priviledges
 @app.route('/api/v1/requests')
 @jwt_required
 def get_requests():

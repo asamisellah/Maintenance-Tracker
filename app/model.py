@@ -79,9 +79,6 @@ def get_user_request(request_id, user_id):
 
 def update_request(request_id, user_id, title,
                    description, type, category, area):
-    user_request = get_user_request(user_id, request_id)
-    if len(user_request) == 0:
-        return user_request
     db.cur.execute("""UPDATE requests
                 SET title = (%s),
                 description = (%s),
@@ -92,4 +89,9 @@ def update_request(request_id, user_id, title,
                    (title, description, type, category,
                     area, request_id, user_id,))
     db.conn.commit()
-    return user_request
+
+
+def delete_request(request_id, user_id):
+    db.cur.execute("DELETE FROM requests WHERE id = (%s) AND user_id = (%s)",
+                   (request_id, user_id,))
+    db.conn.commit()
