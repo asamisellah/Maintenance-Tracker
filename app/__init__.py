@@ -13,10 +13,10 @@ app.config['JWT_SECRET_KEY'] = 'super-secret'
 jwt = JWTManager(app)
 
 
-# GET users
-@app.route('/api/v1/users')
-def get_users():
-    return jsonify({"users": model.get_users()})
+# # GET users
+# @app.route('/api/v1/users')
+# def get_users():
+#     return jsonify({"users": model.get_users()})
 
 
 # POST a user
@@ -66,7 +66,7 @@ def signin_user():
             access_token = create_access_token(identity=user["id"])
             return jsonify({"message": "Sign in Successful!", "token": access_token}), 202
         return jsonify({"message": "Wrong username or password"}), 401
-    return jsonify({"message": "User Not Found"}), 404
+    return jsonify({"message": "Not Found. Sign up to create an account"}), 404
 
 
 # POST a request
@@ -95,11 +95,12 @@ def create_request():
 def user_get_requests():
     user_id = get_jwt_identity()
     requests = get_user_requests(user_id)
-    print(requests)
+    # Check if request exists
     if len(requests) == 0:
         return jsonify({
             "message": "You have no requests. Create a request"
-        }), 200
+        }), 404
+    # Return if exists
     return jsonify({"requests": requests}), 200
 
 
@@ -148,13 +149,23 @@ def user_delete_request(request_id):
     return jsonify({"message": "Request Not Found"}), 404
 
 
-# GET all requests- Admin Priviledges
+# Admin Priviledges
+
+
+# Admin GET all requests
 @app.route('/api/v1/requests')
 @jwt_required
 def get_requests():
-    requests = get_all_requests()
-    if len(requests) == 0:
-        return jsonify({
-            "message": "You have no requests. Create a request"
-        }), 200
-    return jsonify({"requests": requests}), 200
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+        # Check if user is admin
+        if user[0]["admin_role"] == True:
+            all_requests = get_all_requests()
+            # Check if requests contains data
+            if len(all_requests) != 0:
+                return jsonify({"requests": all_requests}), 200
+            return jsonify({"message": "No requests to display"}), 404
+        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+    return jsonify({"message": "Not Found. Sign up to create an account"}), 404

@@ -25,6 +25,13 @@ def get_users():
     return users
 
 
+def get_user_by_id(user_id):
+    db.cur.execute("SELECT * FROM users WHERE id = (%s)", (user_id,))
+    db.conn.commit()
+    users = db.cur.fetchall()
+    return users
+
+
 def get_user(username):
     db.cur.execute("SELECT * FROM users WHERE username = (%s);", (username,))
     db.conn.commit()
