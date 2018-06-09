@@ -219,3 +219,25 @@ def approve_request(request_id):
         return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
     return jsonify({
         "message": "Not Found. Sign up to create an account"}), 404
+
+
+@app.route('/api/v1/requests/<request_id>/disapprove')
+@jwt_required
+def disapprove_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+        # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            if user_request["status"] == "pending":
+                return jsonify({
+                    "message": update_status(request_id, "diapproved")}), 200
+            return jsonify({"message":
+                            "The request has been {}".format(
+                                user_request["status"])
+                            }), 403
+        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+    return jsonify({
+        "message": "Not Found. Sign up to create an account"}), 404
