@@ -2,10 +2,10 @@ from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
 
 connection = {
-    "host": "localhost",
-    "database": "mtracker",
-    "user": "postgres",
-    "password": "db"
+    "host": os.getenv('DB_HOST'),
+    "database": os.getenv("DB_NAME"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD")
 }
 
 test_connection = {
@@ -21,7 +21,7 @@ test_connection = {
 class TrackerDB(object):
 
     def __init__(self):
-        self.conn = connect(**connection)
+        self.conn = connect(os.getenv(DATABASE_URL))
         self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
 
     def query(self, query):
