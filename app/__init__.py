@@ -10,7 +10,6 @@ from flask_jwt_extended import (
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = os.getenv('SECRET')
-
 jwt = JWTManager(app)
 
 
@@ -27,9 +26,9 @@ def create_user():
         # Ensure input data is a string
         elif type(request.json[key]) != str:
             return jsonify({"message": "Input Must be a String"}), 400
-    match = re.search(r'\w+@\w+', request.json.get("email"))
-    if match is None:
-        return return jsonify({"message": "Your Passwords Don't Match"}), 400
+    # match = re.search(r'\w+@\w+', request.json.get("email"))
+    # if match is None:
+    #     return jsonify({"message": "Your Passwords Don't Match"}), 400
     new_user = User(
         request.json.get("username").lower(),
         request.json.get("email").lower(),
