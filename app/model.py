@@ -1,9 +1,9 @@
-from db_connect import TrackerDB
+from db_connect import TestDB
 from psycopg2.extras import RealDictCursor
 from passlib.hash import pbkdf2_sha256 as sha256
 import psycopg2
 
-db = TrackerDB()
+db = TestDB()
 
 
 class User():
@@ -70,6 +70,12 @@ class UserRequest():
                         self.category,
                         self.area))
         db.conn.commit()
+        count = len(get_all_requests())
+        db.cur.execute(
+            "SELECT * FROM requests WHERE id = (%s) AND user_id = (%s)",
+            (count, self.user_id,))
+        new_request = db.cur.fetchone()
+        return new_request
 
 
 def get_all_requests():

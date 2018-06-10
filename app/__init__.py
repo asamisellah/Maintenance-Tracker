@@ -13,12 +13,6 @@ app.config['JWT_SECRET_KEY'] = os.getenv('SECRET')
 jwt = JWTManager(app)
 
 
-# # GET users
-# @app.route('/api/v1/users')
-# def get_users():
-#     return jsonify({"users": model.get_users()})
-
-
 # POST a user
 @app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
@@ -58,8 +52,8 @@ def signin_user():
     if not request.is_json:
         return jsonify({"msg": "Missing JSON in request"}), 400
     # Get input
-    _username = request.json.get("username", None)
-    _password = request.json.get("password", None)
+    _username = request.json.get("username").lower()
+    _password = request.json.get("password")
     # Confirm user exists
     user = get_user(_username)
     if user is not None:
@@ -98,9 +92,9 @@ def create_request():
         request.json.get("category").lower(),
         request.json.get("area").lower()
     )
-    request_data.create_request()
-    print(request_data)
-    return jsonify({"message": "Request Created Successfully"}), 201
+    new_request = request_data.create_request()
+    return jsonify({"message": "Request Created Successfully",
+                    "data": new_request}), 201
 
 
 # GET all requests of logged in user
@@ -123,12 +117,11 @@ def user_get_requests():
 @jwt_required
 def user_get_request(request_id):
     user_id = get_jwt_identity()
-    user_request = get_user_request(user_id, request_id)
-    if len(user_request) == 0:
-        return jsonify({
-            "message": "Request Not Found"
-        }), 403
-    return jsonify({"request": user_request}), 200
+    user_request = get_user_request(request_id, user_id)
+    if user_request is not None:
+        return jsonify({"request": user_request}), 200
+    return jsonify({
+        "message": "Request Not Found"}), 404
 
 
 # UPDATE(PUT) a request
@@ -159,7 +152,7 @@ def user_update_request(request_id):
                        request.json.get("category").lower(),
                        request.json.get("area").lower()
                        )
-        return jsonify({"Success": "Updated Successfully",
+        return jsonify({"message": "Updated Successfully",
                         "data": user_request}), 200
     return jsonify({"message": "Request Not Found"}), 404
 

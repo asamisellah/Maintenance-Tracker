@@ -15,7 +15,7 @@ class TestUsers(unittest.TestCase):
                 "confirm_password": "qwe123"
             },
             "user_signup": {
-                "username": "Betty Cool",
+                "username": "P",
                 "email": "bettycool@email.com",
                 "password": "qwe123",
                 "confirm_password": "qwe123"
@@ -23,12 +23,16 @@ class TestUsers(unittest.TestCase):
             "auth": {
                 "username": "Betty",
                 "password": "qwe123"
+            },
+            "non_user": {
+                "username": "Larry",
+                "password": "qwe123"
             }
         }
 
     def test_create_user(self):
         res = self.client.post(
-            '/api/v1/users',
+            '/api/v1/auth/signup',
             data=json.dumps(dict(self.data["user_signup"])),
             content_type='application/json'
         )
@@ -37,7 +41,7 @@ class TestUsers(unittest.TestCase):
 
     def test_signin_user(self):
         res = self.client.post(
-            '/api/v1/users/signin',
+            '/api/v1/auth/login',
             data=json.dumps(dict(self.data["auth"])),
             content_type='application/json'
         )
@@ -46,32 +50,25 @@ class TestUsers(unittest.TestCase):
     def test_empty_field(self):
         self.data["user"]["username"] = ""
         res = self.client.post(
-            '/api/v1/users',
+            '/api/v1/auth/signup',
             data=json.dumps(dict(self.data["user"])),
             content_type='application/json'
         )
         self.assertEqual(res.status_code, 400)
 
-    # Edge cases
     def test_confirm_password(self):
         self.data["user"]["confirm_password"] = "random"
         res = self.client.post(
-            '/api/v1/users',
+            '/api/v1/auth/signup',
             data=json.dumps(dict(self.data["user"])),
             content_type='application/json'
         )
         self.assertEqual(res.status_code, 400)
 
     def test_signin_unregistered_user(self):
-        self.client.post(
-            '/api/v1/users',
-            data=json.dumps(dict(self.data["user"])),
-            content_type='application/json'
-        )
-        self.data["auth"]["username"] = "Larry"
         res = self.client.post(
-            '/api/v1/users/signin',
-            data=json.dumps(dict(self.data["auth"])),
+            '/api/v1/auth/login',
+            data=json.dumps(dict(self.data["non_user"])),
             content_type='application/json'
         )
 
@@ -80,13 +77,13 @@ class TestUsers(unittest.TestCase):
 
     def test_same_user_registration(self):
         self.client.post(
-            '/api/v1/users',
+            '/api/v1/auth/signup',
             data=json.dumps(dict(self.data["user"])),
             content_type='application/json'
         )
 
         res = self.client.post(
-            '/api/v1/users',
+            '/api/v1/auth/signup',
             data=json.dumps(dict(self.data["user"])),
             content_type='application/json'
         )
