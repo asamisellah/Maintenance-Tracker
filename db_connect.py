@@ -21,7 +21,7 @@ test_connection = {
 class TrackerDB(object):
 
     def __init__(self):
-        self.conn = connect(os.getenv(DATABASE_URL))
+        self.conn = connect(os.getenv('DATABASE_URL'))
         self.cur = self.conn.cursor(cursor_factory=RealDictCursor)
 
     def query(self, query):
