@@ -1,12 +1,20 @@
 from app import app
 import unittest
 import json
+from config import config
+from app.model import drop, init, db
 
 
 class TestUsers(unittest.TestCase):
 
     def setUp(self):
-        self.client = app.test_client()
+        self.app = app
+        self.app.config.from_object(config['testing'])
+        self.app_context = self.app.app_context()
+        self.app_context.push()
+        db.init_app(self.app)
+        self.client = self.app.test_client()
+        init()
         self.data = {
             "user": {
                 "username": "Betty",
@@ -29,6 +37,9 @@ class TestUsers(unittest.TestCase):
                 "password": "qwe123"
             }
         }
+
+    def tearDown(self):
+        drop()
 
     def test_create_user(self):
         res = self.client.post(

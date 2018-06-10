@@ -24,6 +24,35 @@ def generate_hash(password):
     return sha256.hash(password)
 
 
+def drop():
+    db.query("""DROP TABLE IF EXISTS users""")
+    db.query("""DROP TABLE IF EXISTS requests""")
+    db.conn.commit()
+
+
+def init():
+    db.query("""CREATE TABLE users(
+            id serial PRIMARY KEY,
+            username VARCHAR(255),
+            email VARCHAR(255),
+            password VARCHAR(255),
+            admin_role BOOLEAN DEFAULT FALSE
+        )
+            """)
+    db.query("""CREATE TABLE requests(
+            id serial PRIMARY KEY,
+            user_id integer,
+            title VARCHAR(255),
+            description VARCHAR(255),
+            type VARCHAR(255),
+            category VARCHAR(255),
+            area VARCHAR(255),
+            status VARCHAR(255)
+        )
+            """)
+    db.conn.commit()
+
+
 def verify_hash(password, hash):
     return sha256.verify(password, hash)
 

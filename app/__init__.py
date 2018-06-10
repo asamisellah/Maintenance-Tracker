@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, render_template
 from psycopg2.extras import RealDictCursor
 from .model import *
 import os
@@ -7,18 +7,31 @@ from flask_jwt_extended import (
     JWTManager, jwt_required, create_access_token,
     get_jwt_identity
 )
+from config import config
 
 app = Flask(__name__)
-app.config['JWT_SECRET_KEY'] = os.getenv('SECRET')
+RUN_MODE = os.getenv('APP_SETTINGS') if os.getenv(
+    'APP_SETTINGS') else 'development'
+
+app.config.from_object(config[RUN_MODE])
 jwt = JWTManager(app)
+db.init_app(app)
 
 
+@app.route("/")
+def index():
+    return render_template("index.html")
 # POST a user
+
+
 @app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
     # Ensure input is in json format
     if not request.is_json:
-        return jsonify({"msg": "Invalid data format"}), 400
+        return jsonify({"message": "Missing JSON in request"}), 400
+    username = request.json.get('username', None)
+    if not username:
+        return jsonify({"message": "Username must be provided"}), 400
     for key in request.json:
         # Ensure input contains data
         if request.json[key] == "":
@@ -26,9 +39,9 @@ def create_user():
         # Ensure input data is a string
         elif type(request.json[key]) != str:
             return jsonify({"message": "Input Must be a String"}), 400
-    # match = re.search(r'\w+@\w+', request.json.get("email"))
-    # if match is None:
-    #     return jsonify({"message": "Your Passwords Don't Match"}), 400
+    match = re.search(r'\w+@\w+', request.json.get("email"))
+    if match is None:
+        return jsonify({"message": "Invalid email address"}), 400
     new_user = User(
         request.json.get("username").lower(),
         request.json.get("email").lower(),
@@ -53,7 +66,7 @@ def create_user():
 def signin_user():
     # Ensure input is in json format
     if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
+        return jsonify({"message": "Missing JSON in request"}), 400
     # Get input
     _username = request.json.get("username").lower()
     _password = request.json.get("password")
@@ -67,7 +80,7 @@ def signin_user():
             return jsonify({
                 "message": "Sign in Successful!", "token": access_token}), 202
         return jsonify({"message": "Wrong username or password"}), 401
-    return jsonify({"message": "Not Found. Sign up to create an account"}), 404
+    return jsonify({"message": "User Not Found. Create an Account to Sign In"}), 404
 
 
 # POST a request
@@ -78,7 +91,7 @@ def create_request():
     user_id = get_jwt_identity()
     # Ensure input is in json format
     if not request.is_json:
-        return jsonify({"msg": "Invalid data format"}), 400
+        return jsonify({"message": "Missing JSON in request"}), 400
     for key in request.json:
         # Ensure input contains data
         if request.json[key] == "":
@@ -136,7 +149,7 @@ def user_update_request(request_id):
 
     # Ensure input is in json format
     if not request.is_json:
-        return jsonify({"msg": "Invalid data format"}), 400
+        return jsonify({"message": "Missing JSON in request"}), 400
     for key in request.json:
         # Ensure input contains data
         if request.json[key] == "":
@@ -147,16 +160,20 @@ def user_update_request(request_id):
 
     # Ensure request has been fetched
     if user_request is not None:
-        update_request(request_id,
-                       user_id,
-                       request.json.get("title").lower(),
-                       request.json.get("description").lower(),
-                       request.json.get("_type").lower(),
-                       request.json.get("category").lower(),
-                       request.json.get("area").lower()
-                       )
-        return jsonify({"message": "Updated Successfully",
-                        "data": user_request}), 200
+        if user_request["status"] == "pending":
+            update_request(request_id,
+                           user_id,
+                           request.json.get("title").lower(),
+                           request.json.get("description").lower(),
+                           request.json.get("_type").lower(),
+                           request.json.get("category").lower(),
+                           request.json.get("area").lower()
+                           )
+            return jsonify({"message": "Request Updated Successfully",
+                            "data": user_request}), 200
+        return jsonify({"message":
+                        "Cannot Update, Your Request is Already {}".
+                        format(user_request["status"])}), 400
     return jsonify({"message": "Request Not Found"}), 404
 
 
@@ -168,7 +185,7 @@ def user_delete_request(request_id):
     user_request = get_user_request(request_id, user_id)
     if len(user_request) != 0:
         delete_request(request_id, user_id)
-        return jsonify({"message": "Delete Successful"}), 200
+        return jsonify({"message": "Request Deleted Successfully"}), 200
     return jsonify({"message": "Request Not Found"}), 404
 
 
@@ -191,8 +208,8 @@ def get_requests():
             if len(all_requests) != 0:
                 return jsonify({"requests": all_requests}), 200
             return jsonify({"message": "No requests to display"}), 404
-        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
-    return jsonify({"message": "Not Found. Sign up to create an account"}), 404
+        return jsonify({"message": "Sorry, Only Admin can Access"}), 403
+    return jsonify({"message": "User Not Found. Sign up to create an account"}), 404
 
 
 # Admin Approve Requests
@@ -209,14 +226,15 @@ def approve_request(request_id):
             # Check request status
             if user_request["status"] == "pending":
                 return jsonify({
-                    "message": update_status(request_id, "approved")}), 200
+                    "message": "Request Successfully {}".
+                    format(update_status(request_id, "approved"))}), 200
             return jsonify({"message":
-                            "The request has been {}".format(
+                            "Failed, The request has been {}".format(
                                 user_request["status"])
                             }), 400
-        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+        return jsonify({"message": "Sorry, Only Admin can Access"}), 403
     return jsonify({
-        "message": "Not Found. Sign up to create an account"}), 404
+        "message": "User Not Found. Sign up to create an account"}), 404
 
 
 # Admin Disapprove Requests
@@ -238,9 +256,9 @@ def disapprove_request(request_id):
                             "The request has been {}".format(
                                 user_request["status"])
                             }), 400
-        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+        return jsonify({"message": "Sorry, Only Admin can Access"}), 403
     return jsonify({
-        "message": "Not Found. Sign up to create an account"}), 404
+        "message": "User Not Found. Sign up to create an account"}), 404
 
 
 # Admin Resolve Requests
@@ -264,4 +282,4 @@ def resolve_request(request_id):
                             }), 400
         return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
     return jsonify({
-        "message": "Not Found. Sign up to create an account"}), 404
+        "message": "User Not Found. Sign up to create an account"}), 404

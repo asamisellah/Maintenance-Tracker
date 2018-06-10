@@ -3,7 +3,9 @@ import psycopg2
 
 from db_connect import TrackerDB
 
-db = TrackerDB()
+from app import app
+
+db = TrackerDB(app)
 
 
 def main():

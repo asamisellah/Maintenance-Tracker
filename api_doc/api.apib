@@ -1,0 +1,518 @@
+FORMAT: 1A
+HOST: https://andela-maintenance-tracker-api.herokuapp.com/api/v1/
+
+# Maintenance Tracker API
+
+Maintenance Tracker App is an application that provides users with the ability
+to reach out to operations or repairs department regarding repair or maintenance
+requests and monitor the status of their request.
+
+# Group User Account
+
+## User Registration [/auth/signup]
+You can sign up a user by providing a username, email and password.
+
+### Register user[POST]
+
++ Request (application/json)
+
+        {
+            "username": "name",
+            "email": "example@gmail.com",
+            "password": "123abc",
+            "confirm_password": "123abc"
+        }
+
+
+
++ Response 201 (application/json)
+
+        {
+            "message": "Sign Up Successful"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Missing JSON in request"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "All Fields Required"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "Input Must be a String"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "Your Passwords Don't Match"
+        }
+
++ Response 400 (application/json)
+
+        {
+          "message": "User already exists"
+        }
+
+
+## Login [/auth/login]
+You can sign in a registered user with their username and password.
+Please take note of the auth token for you will need it for all user requests.
+
+### Login User [POST]
+
++ Request (application/json)
+
+        {
+            "username": "name",
+            "password": "123abc",
+        }
+
+
++ Response 202 (application/json)
+
+        {
+            "message": "Sign in Successful!",
+            "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNTI4NjM3MzI1LCJleHAiOjE1Mjg2MzgyMjUsIm5iZiI6MTUyODYzNzMyNSwiaWRlbnRpdHkiOjUsImp0aSI6IjY3MzNkZGM5LThhYWYtNDVlOC05NGU4LTJkNDU0YzAwZjkzNSIsImZyZXNoIjpmYWxzZX0.atjGqkdHfRso4HQz5jyIo5tIUeOuDtYFCUftkxWOn54"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Missing JSON in request"
+        }
+
+
++ Response 401 (application/json)
+
+        {
+            "message": "Wrong username or password"
+        }
+
+
++ Response 404 (application/json)
+
+        {
+            "message": "User Not Found. Create an Account to Sign In"
+        }
+
+
+# Group Requests
+You can create, view, update and delete requests once logged in.
+**NOTE:** You must include the access token in the header else a 401 or 404 response will be returned.
+
+## Requests Resources [/users/requests]
+You can view a list of all the requests you made. You cannot view another user's requests.
+
+### Get all your Requests [GET]
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "requests": [
+                {
+                    "area": "block b",
+                    "category": "fixes",
+                    "description": "big crack",
+                    "id": 2,
+                    "status": "pending",
+                    "title": "cracked wall",
+                    "type": "repair",
+                    "user_id": 1
+                },
+                {
+                    "area": "block b",
+                    "category": "fixes",
+                    "description": "big crack",
+                    "id": 1,
+                    "status": "resolved",
+                    "title": "cracked wall",
+                    "type": "repair",
+                    "user_id": 1
+                },
+                {
+                    "area": "block f",
+                    "category": "floor/wall",
+                    "description": "deep cracks",
+                    "id": 4,
+                    "status": "pending",
+                    "title": "cracked wall",
+                    "type": "repair",
+                    "user_id": 5
+                }
+            ]
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "You have no requests. Create a request"
+        }
+
+
+### Create a request [POST]
+You can create a new request. The default status is pending.
+
++ Request (application/json)
+
+        {
+            "title": "damaged pipe",
+            "description": "Leaking pipe",
+            "type": "repair",
+            "category": "fix",
+            "area": "block D"
+        }
+
+
++ Response 202 (application/json)
+
+        {
+            "message": "Request Created Successfully",
+            "requests": [
+                {
+                    "area": "block d",
+                    "category": "fix",
+                    "description": "leaking pipe",
+                    "id": 3,
+                    "status": "pending",
+                    "title": "damaged pipe",
+                    "type": "repair",
+                    "user_id": 5
+                }
+            ]
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Missing JSON in request"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "message": "All Fields Required"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "message": "Input Must be a String"
+        }
+
+## Single Request Resources [/users/requests/{request_id}]
+
++ Parameters
+    + request_id (required,number) - Id of the request to be returned
+
+### Get a Request [GET]
+
+You get a single request by its specific Id.
+
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "requests": [
+                {
+                    "area": "block d",
+                    "category": "fix",
+                    "description": "leaking pipe",
+                    "id": 3,
+                    "status": "pending",
+                    "title": "damaged pipe",
+                    "type": "repair",
+                    "user_id": 5
+                }
+            ]
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Request Not Found"
+        }
+
+### Update a Request [PUT]
+
+You can edit details of an existing request. **NOTE:** You can only edit a request if the status is pending.
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
+    + Body
+
+            {
+              "category": "plumbing",
+              "description": "broken tap"
+            }
+
++ Response 200 (application/json)
+
+        {
+            "message": "Request Updated Successfully",
+            "requests": [
+                {
+                    "area": "block d",
+                    "category": "plumbing",
+                    "description": "broken tap",
+                    "id": 3,
+                    "status": "pending",
+                    "title": "damaged pipe",
+                    "type": "repair",
+                    "user_id": 5
+                }
+            ]
+        }
+
++ Response 202 (application/json)
+
+        {
+            "message": "Cannot Update, Your Request is Already"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "Request Not Found"
+        }
+
+### Delete a Request [DELETE]
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Request Deleted Successfully"
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "Request Not Found"
+        }
+
+# Group Admin Priviledges
+As an admin, you have added capabilities such as approving, disapproving and resolving a request.
+**NOTE:** - You must include the access token in the header else a 401 or 404 response will be returned.
+          - You must be registered as an admin
+
+## View all Requests by users [/requests]
+
+### View Requests [GET]
+You can view all requests made by users.
++ Request (application/json)
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "requests": [
+                {
+                    "area": "block b",
+                    "category": "fixes",
+                    "description": "big crack",
+                    "id": 2,
+                    "status": "pending",
+                    "title": "cracked wall",
+                    "type": "repair",
+                    "user_id": 1
+                },
+                {
+                    "area": "block b",
+                    "category": "fixes",
+                    "description": "big crack",
+                    "id": 1,
+                    "status": "resolved",
+                    "title": "cracked wall",
+                    "type": "repair",
+                    "user_id": 1
+                },
+                {
+                    "area": "block f",
+                    "category": "floor/wall",
+                    "description": "deep cracks",
+                    "id": 4,
+                    "status": "pending",
+                    "title": "cracked wall",
+                    "type": "repair",
+                    "user_id": 5
+                }
+            ]
+        }
+
++ Response 404 (application/json)
+
+        {
+            "message": "No requests to display"
+        }
+
+
++ Response 403 (application/json)
+
+        {
+            "message": "Sorry, Only Admin can Access"
+        }
+
+
++ Response 404 (application/json)
+
+        {
+            "message": "User Not Found. Sign up to create an account"
+        }
+
+## Approve a Request [/requests/{request_id}/approve]
+You can only approve a pending request
+
++ Parameters
+    + request_id (required,number) - Id of the request to be returned
+
+### Approve Request [PUT]
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Request Successfully approved"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "message": "Failed, The request has been resolved"
+        }
+
+
++ Response 403 (application/json)
+
+        {
+            "message": "Sorry, Only Admin can Access"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "User Not Found. Sign up to create an account"
+        }
+
+## Disapprove a Request [/requests/{request_id}/disapprove]
+You can only disapprove a pending request
+
++ Parameters
+    + request_id (required,number) - Id of the request to be returned
+
+### Disapprove Request [PUT]
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Request Successfully disapproved"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "message": "Failed, The request has been approved"
+        }
+
+
++ Response 403 (application/json)
+
+        {
+            "message": "Sorry, Only Admin can Access"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "User Not Found. Sign up to create an account"
+        }
+
+## Resolve a Request [/requests/{request_id}/resolve]
+You can only resove an approved request
+
++ Parameters
+    + request_id (required,number) - Id of the request to be returned
+
+### Resolve Request [PUT]
+
++ Request (application/json)
+
+
+    + Headers
+
+            Authorization: Bearer JWT Token
+
++ Response 200 (application/json)
+
+        {
+            "message": "Request Successfully resolved"
+        }
+
+
++ Response 400 (application/json)
+
+        {
+            "message": "Failed, The request has been disapproved"
+        }
+
+
++ Response 403 (application/json)
+
+        {
+            "message": "Sorry, Only Admin can Access"
+        }
+
++ Response 400 (application/json)
+
+        {
+            "message": "User Not Found. Sign up to create an account"
+        }

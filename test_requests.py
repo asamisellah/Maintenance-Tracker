@@ -1,13 +1,18 @@
 from app import app
 import unittest
 import json
+from config import config
+from app.model import drop, init, db
 
 
 class TestRequests(unittest.TestCase):
 
     def setUp(self):
-        # app.config["TESTING"] = True
-        self.client = app.test_client()
+        self.app = app
+        self.app.config.from_object(config['testing'])
+        db.init_app(self.app)
+        self.client = self.app.test_client()
+        init()
         self.data = {
             "user": {
                 "username": "Betty",
@@ -34,6 +39,9 @@ class TestRequests(unittest.TestCase):
                 "area": "Block A"
             }
         }
+
+    def tearDown(self):
+        drop()
 
     def signup_and_signin_user(self):
         # Sign up user
@@ -102,20 +110,20 @@ class TestRequests(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
 
-    # def test_delete_request(self):
-    #     header = self.signup_and_signin_user()
-    #     res_post = self.client.post(
-    #         '/api/v1/users/requests', headers=header,
-    #         data=json.dumps(dict(self.data["request"])),
-    #         content_type='application/json'
-    #     )
-    #     self.assertEqual(res_post.status_code, 201)
+    def test_delete_request(self):
+        header = self.signup_and_signin_user()
+        res_post = self.client.post(
+            '/api/v1/users/requests', headers=header,
+            data=json.dumps(dict(self.data["request"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res_post.status_code, 201)
 
-    #     request_id = json.loads(res_post.data.decode())["data"]["id"]
+        request_id = json.loads(res_post.data.decode())["data"]["id"]
 
-    #     res = self.client.delete(
-    #         '/api/v1/users/requests/{}'.format(request_id), headers=header)
-    #     self.assertEqual(res.status_code, 200)
+        res = self.client.delete(
+            '/api/v1/users/requests/{}'.format(request_id), headers=header)
+        self.assertEqual(res.status_code, 200)
 
     # Edge Cases
     def test_get_request_not_in_db(self):
@@ -141,7 +149,3 @@ class TestRequests(unittest.TestCase):
     #     # Get the request
     #     res = self.client.get('/api/v1/users/requests/{}'.format(request_id))
     #     self.assertEqual(res.status_code, 403)
-
-
-if __name__ == "__main__":
-    unittest.main()
