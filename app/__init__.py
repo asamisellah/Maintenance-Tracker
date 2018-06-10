@@ -150,7 +150,7 @@ def user_update_request(request_id):
             return jsonify({"message": "Input Must be a String"}), 400
 
     # Ensure request has been fetched
-    if len(user_request) != 0:
+    if user_request is not None:
         update_request(request_id,
                        user_id,
                        request.json.get("title").lower(),
@@ -159,7 +159,8 @@ def user_update_request(request_id):
                        request.json.get("category").lower(),
                        request.json.get("area").lower()
                        )
-        return jsonify({"Success": user_request}), 200
+        return jsonify({"Success": "Updated Successfully",
+                        "data": user_request}), 200
     return jsonify({"message": "Request Not Found"}), 404
 
 
@@ -184,10 +185,11 @@ def user_delete_request(request_id):
 def get_requests():
     user_id = get_jwt_identity()
     user = get_user_by_id(user_id)
+    print(user)
     # Check if user exists
     if len(user) != 0:
         # Check if user is admin
-        if user[0]["admin_role"] == True:
+        if user["admin_role"] is True:
             all_requests = get_all_requests()
             # Check if requests contains data
             if len(all_requests) != 0:
@@ -195,3 +197,75 @@ def get_requests():
             return jsonify({"message": "No requests to display"}), 404
         return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
     return jsonify({"message": "Not Found. Sign up to create an account"}), 404
+
+
+# Admin Approve Requests
+@app.route('/api/v1/requests/<request_id>/approve', methods=['PUT'])
+@jwt_required
+def approve_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+        # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            # Check request status
+            if user_request["status"] == "pending":
+                return jsonify({
+                    "message": update_status(request_id, "approved")}), 200
+            return jsonify({"message":
+                            "The request has been {}".format(
+                                user_request["status"])
+                            }), 400
+        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+    return jsonify({
+        "message": "Not Found. Sign up to create an account"}), 404
+
+
+# Admin Disapprove Requests
+@app.route('/api/v1/requests/<request_id>/disapprove', methods=['PUT'])
+@jwt_required
+def disapprove_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+        # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            # Check request status
+            if user_request["status"] == "pending":
+                return jsonify({
+                    "message": update_status(request_id, "diapproved")}), 200
+            return jsonify({"message":
+                            "The request has been {}".format(
+                                user_request["status"])
+                            }), 400
+        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+    return jsonify({
+        "message": "Not Found. Sign up to create an account"}), 404
+
+
+# Admin Resolve Requests
+@app.route('/api/v1/requests/<request_id>/resolve', methods=['PUT'])
+@jwt_required
+def resolve_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+        # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            # Check request status
+            if user_request["status"] == "approved":
+                return jsonify({
+                    "message": update_status(request_id, "resolve")}), 200
+            return jsonify({"message":
+                            "The request has been {}".format(
+                                user_request["status"])
+                            }), 400
+        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+    return jsonify({
+        "message": "Not Found. Sign up to create an account"}), 404

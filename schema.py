@@ -26,7 +26,8 @@ def main():
             description VARCHAR(255),
             type VARCHAR(255),
             category VARCHAR(255),
-            area VARCHAR(255)
+            area VARCHAR(255),
+            status VARCHAR(255)
         )
             """)
         db.conn.commit()
