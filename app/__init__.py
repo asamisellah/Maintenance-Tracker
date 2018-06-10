@@ -150,7 +150,7 @@ def user_update_request(request_id):
             return jsonify({"message": "Input Must be a String"}), 400
 
     # Ensure request has been fetched
-    if len(user_request) != 0:
+    if user_request is not None:
         update_request(request_id,
                        user_id,
                        request.json.get("title").lower(),
@@ -159,7 +159,8 @@ def user_update_request(request_id):
                        request.json.get("category").lower(),
                        request.json.get("area").lower()
                        )
-        return jsonify({"Success": user_request}), 200
+        return jsonify({"Success": "Updated Successfully",
+                        "data": user_request}), 200
     return jsonify({"message": "Request Not Found"}), 404
 
 
@@ -199,7 +200,7 @@ def get_requests():
 
 
 # Admin Approve Requests
-@app.route('/api/v1/requests/<request_id>/approve')
+@app.route('/api/v1/requests/<request_id>/approve', methods=['PUT'])
 @jwt_required
 def approve_request(request_id):
     user_id = get_jwt_identity()
@@ -223,7 +224,7 @@ def approve_request(request_id):
 
 
 # Admin Disapprove Requests
-@app.route('/api/v1/requests/<request_id>/disapprove')
+@app.route('/api/v1/requests/<request_id>/disapprove', methods=['PUT'])
 @jwt_required
 def disapprove_request(request_id):
     user_id = get_jwt_identity()
@@ -247,7 +248,7 @@ def disapprove_request(request_id):
 
 
 # Admin Resolve Requests
-@app.route('/api/v1/requests/<request_id>/resolve')
+@app.route('/api/v1/requests/<request_id>/resolve', methods=['PUT'])
 @jwt_required
 def resolve_request(request_id):
     user_id = get_jwt_identity()
