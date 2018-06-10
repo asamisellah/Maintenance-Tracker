@@ -1,6 +1,6 @@
 from psycopg2 import connect
 from psycopg2.extras import RealDictCursor
-
+import os
 connection = {
     "host": os.getenv('DB_HOST'),
     "database": os.getenv("DB_NAME"),
