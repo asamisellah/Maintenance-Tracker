@@ -1,9 +1,9 @@
-from db_connect import TestDB
+from db_connect import TrackerDB
 from psycopg2.extras import RealDictCursor
 from passlib.hash import pbkdf2_sha256 as sha256
 import psycopg2
 
-db = TestDB()
+db = TrackerDB()
 
 
 class User():
