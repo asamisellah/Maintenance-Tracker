@@ -10,7 +10,6 @@ install:
 
 before_script:
   - psql -c "CREATE DATABASE mtracker_test;" -U postgres
-  - psql -c "CREATE USER postgres WITH PASSWORD 'db';" -U postgres
 
 script:
   - nosetests --with-coverage  --cover-package=app && coverage report
