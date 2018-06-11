@@ -22,12 +22,6 @@ class TestUsers(unittest.TestCase):
                 "password": "qwe123",
                 "confirm_password": "qwe123"
             },
-            "user_signup": {
-                "username": "P",
-                "email": "bettycool@email.com",
-                "password": "qwe123",
-                "confirm_password": "qwe123"
-            },
             "auth": {
                 "username": "Betty",
                 "password": "qwe123"
@@ -44,13 +38,20 @@ class TestUsers(unittest.TestCase):
     def test_create_user(self):
         res = self.client.post(
             '/api/v1/auth/signup',
-            data=json.dumps(dict(self.data["user_signup"])),
+            data=json.dumps(dict(self.data["user"])),
             content_type='application/json'
         )
 
         self.assertEqual(res.status_code, 201)
 
     def test_signin_user(self):
+        res = self.client.post(
+            '/api/v1/auth/signup',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 201)
+
         res = self.client.post(
             '/api/v1/auth/login',
             data=json.dumps(dict(self.data["auth"])),
@@ -60,6 +61,33 @@ class TestUsers(unittest.TestCase):
 
     def test_empty_field(self):
         self.data["user"]["username"] = ""
+        res = self.client.post(
+            '/api/v1/auth/signup',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_whitespace_passed_as_input(self):
+        self.data["user"]["username"] = " "
+        res = self.client.post(
+            '/api/v1/auth/signup',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_input_not_string(self):
+        self.data["user"]["username"] = 18347
+        res = self.client.post(
+            '/api/v1/auth/signup',
+            data=json.dumps(dict(self.data["user"])),
+            content_type='application/json'
+        )
+        self.assertEqual(res.status_code, 400)
+
+    def test_wrong_email_format(self):
+        self.data["user"]["email"] = "betty.com"
         res = self.client.post(
             '/api/v1/auth/signup',
             data=json.dumps(dict(self.data["user"])),

@@ -21,10 +21,6 @@ class User():
         db.conn.commit()
 
 
-def generate_hash(password):
-    return sha256.hash(password)
-
-
 def drop():
     db.query("""DROP TABLE IF EXISTS users""")
     db.query("""DROP TABLE IF EXISTS requests""")
@@ -54,8 +50,18 @@ def init():
     db.conn.commit()
 
 
+def generate_hash(password):
+    return sha256.hash(password)
+
+
 def verify_hash(password, hash):
     return sha256.verify(password, hash)
+
+
+def make_user_admin():
+    db.cur.execute(
+        """UPDATE users SET admin_role=TRUE WHERE id = 1""")
+    db.conn.commit()
 
 
 def get_users():

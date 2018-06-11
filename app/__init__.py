@@ -39,6 +39,10 @@ def create_user():
             # Ensure input data is a string
             elif type(request.json[key]) != str:
                 return jsonify({"message": "Input Must be a String"}), 400
+            # Ensure string is not whitespace
+            elif request.json[key].strip() == "":
+                print(request.json[key])
+                return jsonify({"message": "Input Must be Valid Data"}), 400
         match = re.search(r'\w+@\w+', request.json.get("email"))
         if match is None:
             return jsonify({"message": "Invalid email address"}), 400
@@ -116,7 +120,7 @@ def create_request():
             elif type(request.json[key]) != str:
                 return jsonify({"message": "Input Must be a String"}), 400
             # Ensure string is not whitespace
-            if request.json[key].strip() == "":
+            elif request.json[key].strip() == "":
                 print(request.json[key])
                 return jsonify({"message": "Input Must be Valid Data"}), 400
         # create new request
@@ -191,6 +195,10 @@ def user_update_request(request_id):
             # Ensure input data is a string
             elif type(request.json[key]) != str:
                 return jsonify({"message": "Input Must be a String"}), 400
+            # Ensure string is not whitespace
+            elif request.json[key].strip() == "":
+                print(request.json[key])
+                return jsonify({"message": "Input Must be Valid Data"}), 400
 
         # Ensure request has been fetched
         if user_request is not None:
@@ -325,7 +333,7 @@ def resolve_request(request_id):
                 # Check request status
                 if user_request["status"] == "approved":
                     return jsonify({
-                        "message": update_status(request_id, "resolve")}), 200
+                        "message": update_status(request_id, "resolved")}), 200
                 return jsonify({"message":
                                 "The request has been {}".format(
                                     user_request["status"])
