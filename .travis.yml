@@ -8,8 +8,11 @@ install:
   - pip install -r requirements.txt
   - pip install coveralls
 
+before_script:
+  - psql -c 'create database mtracker_test;' -U postgres
+
 script:
   - nosetests --with-coverage  --cover-package=app && coverage report
 
-after_success: 
+after_success:
   - coveralls

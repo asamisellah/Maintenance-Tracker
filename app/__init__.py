@@ -88,7 +88,8 @@ def signin_user():
                 return jsonify({
                     "message": "Sign in Successful!", "token": access_token}), 202
             return jsonify({"message": "Wrong username or password"}), 401
-        return jsonify({"message": "User Not Found. Create an Account to Sign In"}), 404
+        return jsonify({"message":
+                        "User Not Found. Create an Account to Sign In"}), 404
     except:
         return jsonify({"message": "Not allowed"}), 400
 
