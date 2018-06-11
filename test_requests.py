@@ -131,22 +131,7 @@ class TestRequests(unittest.TestCase):
             '/api/v1/users/requests/{}'.format(request_id), headers=header)
         self.assertEqual(res.status_code, 200)
 
-    # Edge Cases
     def test_get_request_not_in_db(self):
         header = self.signup_and_signin_user()
         res = self.client.get('/api/v1/users/requests/0', headers=header)
         self.assertEqual(res.status_code, 404)
-
-    # def test_empty_request(self):
-    #     header = self.signup_and_signin_user()
-    #     self.data[re]
-
-    #     res = self.client.post(
-    #         '/api/v1/users/requests', headers=header,
-    #         data=json.dumps(dict(self.data["request"])),
-    #         content_type='application/json',
-    #     )
-    #     self.assertEqual(res.status_code, 201)
-
-    #     res = self.client.get('/api/v1/users/requests/0', headers=header)
-    #     self.assertEqual(res.status_code, 404)
