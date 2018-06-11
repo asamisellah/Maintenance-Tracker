@@ -25,120 +25,116 @@ def index():
 
 @app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
-    try:
-        # Ensure input is in json format
-        if not request.is_json:
-            return jsonify({"message": "Missing JSON in request"}), 400
-        for key in request.json:
-            # Ensure key is valid
-            if key is None:
-                return jsonify({"message": "Invalid"}), 400
-            # Ensure input contains data
-            elif request.json[key] == "":
-                return jsonify({"message": "All Fields Required"}), 400
-            # Ensure input data is a string
-            elif type(request.json[key]) != str:
-                return jsonify({"message": "Input Must be a String"}), 400
-            # Ensure string is not whitespace
-            elif request.json[key].strip() == "":
-                print(request.json[key])
-                return jsonify({"message": "Input Must be Valid Data"}), 400
-        match = re.search(r'\w+@\w+', request.json.get("email"))
-        if match is None:
-            return jsonify({"message": "Invalid email address"}), 400
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is valid
+        if key is None:
+            return jsonify({"message": "Invalid"}), 400
+        # Ensure input contains data
+        elif request.json[key] == "":
+            return jsonify({"message": "All Fields Required"}), 400
+        # Ensure input data is a string
+        elif type(request.json[key]) != str:
+            return jsonify({"message": "Input Must be a String"}), 400
+        # Ensure string is not whitespace
+        elif request.json[key].strip() == "":
+            print(request.json[key])
+            return jsonify({"message": "Input Must be Valid Data"}), 400
+    match = re.search(r'\w+@\w+', request.json.get("email"))
+    if match is None:
+        return jsonify({"message": "Invalid email address"}), 400
+
+    try
         new_user = User(
             request.json.get("username").lower(),
             request.json.get("email").lower(),
             request.json.get("password")
         )
-        # Confirm password
-        if new_user.password != request.json.get("confirm_password"):
-            return jsonify({"message": "Your Passwords Don't Match"}), 400
-        # Check if user already exists
-        users = get_users()
-
-        if len(users) != 0:
-            for user in users:
-                if user["username"] == new_user.username:
-                    return jsonify({"message": "User already exists"}), 400
-        new_user.create_user()
-        return jsonify({"message": "Sign Up Successful"}), 201
     except:
         return jsonify({"message": "Not allowed"}), 400
+    # Confirm password
+    if new_user.password != request.json.get("confirm_password"):
+        return jsonify({"message": "Your Passwords Don't Match"}), 400
+    # Check if user already exists
+    users = get_users()
 
-        # Sign in a user
+    if len(users) != 0:
+        for user in users:
+            if user["username"] == new_user.username:
+                return jsonify({"message": "User already exists"}), 400
+    new_user.create_user()
+    return jsonify({"message": "Sign Up Successful"}), 201
 
 
+# Sign in a user
 @app.route('/api/v1/auth/login', methods=['POST'])
 def signin_user():
-    try:
-        # Ensure input is in json format
-        if not request.is_json:
-            return jsonify({"message": "Missing JSON in request"}), 400
-        for key in request.json:
-            # Ensure key is not empty
-            if key == "":
-                return jsonify({"message": "Invalid format"}), 400
-        # Get input
-        _username = request.json.get("username").lower()
-        _password = request.json.get("password")
-        # Confirm user exists
-        user = get_user(_username)
-        if user is not None:
-            # Validate user credentials
-            if user["username"] == _username and verify_hash(_password, user["password"]):
-                # Login user and generate Access Token
-                access_token = create_access_token(identity=user["id"])
-                return jsonify({
-                    "message": "Sign in Successful!", "token": access_token}), 202
-            return jsonify({"message": "Wrong username or password"}), 401
-        return jsonify({"message":
-                        "User Not Found. Create an Account to Sign In"}), 404
-    except:
-        return jsonify({"message": "Not allowed"}), 400
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is not empty
+        if key == "":
+            return jsonify({"message": "Invalid format"}), 400
+    # Get input
+    _username = request.json.get("username").lower()
+    _password = request.json.get("password")
+    # Confirm user exists
+    user = get_user(_username)
+    if user is not None:
+        # Validate user credentials
+        if user["username"] == _username and verify_hash(_password, user["password"]):
+            # Login user and generate Access Token
+            access_token = create_access_token(identity=user["id"])
+            return jsonify({
+                "message": "Sign in Successful!", "token": access_token}), 202
+        return jsonify({"message": "Wrong username or password"}), 401
+    return jsonify({"message":
+                    "User Not Found. Create an Account to Sign In"}), 404
+
 
 # POST a request
-
-
 @app.route('/api/v1/users/requests', methods=['POST'])
 @jwt_required
 def create_request():
+    # pass user_id from token
+    user_id = get_jwt_identity()
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is not empty
+        if key == "":
+            return jsonify({"message": "Invalid format"}), 400
+        # Ensure input contains data
+        elif request.json[key] == "":
+            return jsonify({"message": "All Fields Required"}), 400
+        # Ensure input data is a string
+        elif type(request.json[key]) != str:
+            return jsonify({"message": "Input Must be a String"}), 400
+        # Ensure string is not whitespace
+        elif request.json[key].strip() == "":
+            print(request.json[key])
+            return jsonify({"message": "Input Must be Valid Data"}), 400
     try:
-        # pass user_id from token
-        user_id = get_jwt_identity()
-        # Ensure input is in json format
-        if not request.is_json:
-            return jsonify({"message": "Missing JSON in request"}), 400
-        for key in request.json:
-            # Ensure key is not empty
-            if key == "":
-                return jsonify({"message": "Invalid format"}), 400
-            # Ensure input contains data
-            elif request.json[key] == "":
-                return jsonify({"message": "All Fields Required"}), 400
-            # Ensure input data is a string
-            elif type(request.json[key]) != str:
-                return jsonify({"message": "Input Must be a String"}), 400
-            # Ensure string is not whitespace
-            elif request.json[key].strip() == "":
-                print(request.json[key])
-                return jsonify({"message": "Input Must be Valid Data"}), 400
         # create new request
-        request_data = UserRequest(
-            user_id,
-            request.json.get("title").lower(),
-            request.json.get("description").lower(),
-            request.json.get("_type").lower(),
-            request.json.get("category").lower(),
-            request.json.get("area").lower()
-        )
-        if request_data is not None:
-            new_request = request_data.create_request()
-            return jsonify({"message": "Request Created Successfully",
-                            "data": new_request}), 201
-        return jsonify({"message": "Invalid input"}), 400
-    except:
-        return jsonify({"message": "Not Allowed"}), 400
+    request_data = UserRequest(
+        user_id,
+        request.json.get("title").lower(),
+        request.json.get("description").lower(),
+        request.json.get("_type").lower(),
+        request.json.get("category").lower(),
+        request.json.get("area").lower()
+    )
+        except:
+            return jsonify({"message": "Not Allowed"}), 400
+    if request_data is not None:
+        new_request = request_data.create_request()
+        return jsonify({"message": "Request Created Successfully",
+                        "data": new_request}), 201
+    return jsonify({"message": "Invalid input"}), 400
 
 
 # GET all requests of logged in user
