@@ -3,6 +3,7 @@ from psycopg2.extras import RealDictCursor
 from passlib.hash import pbkdf2_sha256 as sha256
 import psycopg2
 
+
 db = TrackerDB()
 
 
@@ -20,12 +21,47 @@ class User():
         db.conn.commit()
 
 
+def drop():
+    db.query("""DROP TABLE IF EXISTS users""")
+    db.query("""DROP TABLE IF EXISTS requests""")
+    db.conn.commit()
+
+
+def init():
+    db.query("""CREATE TABLE users(
+            id serial PRIMARY KEY,
+            username VARCHAR(255),
+            email VARCHAR(255),
+            password VARCHAR(255),
+            admin_role BOOLEAN DEFAULT FALSE
+        )
+            """)
+    db.query("""CREATE TABLE requests(
+            id serial PRIMARY KEY,
+            user_id integer,
+            title VARCHAR(255),
+            description VARCHAR(255),
+            type VARCHAR(255),
+            category VARCHAR(255),
+            area VARCHAR(255),
+            status VARCHAR(255)
+        )
+            """)
+    db.conn.commit()
+
+
 def generate_hash(password):
     return sha256.hash(password)
 
 
 def verify_hash(password, hash):
     return sha256.verify(password, hash)
+
+
+def make_user_admin():
+    db.cur.execute(
+        """UPDATE users SET admin_role=TRUE WHERE id = 1""")
+    db.conn.commit()
 
 
 def get_users():
@@ -70,6 +106,12 @@ class UserRequest():
                         self.category,
                         self.area))
         db.conn.commit()
+        count = len(get_all_requests())
+        db.cur.execute(
+            "SELECT * FROM requests WHERE id = (%s) AND user_id = (%s)",
+            (count, self.user_id,))
+        new_request = db.cur.fetchone()
+        return new_request
 
 
 def get_all_requests():
