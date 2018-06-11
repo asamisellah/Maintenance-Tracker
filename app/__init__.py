@@ -115,15 +115,15 @@ def create_request():
             print(request.json[key])
             return jsonify({"message": "Input Must be Valid Data"}), 400
 
-        # create new request
-        request_data = UserRequest(
-            user_id,
-            request.json.get("title").lower(),
-            request.json.get("description").lower(),
-            request.json.get("_type").lower(),
-            request.json.get("category").lower(),
-            request.json.get("area").lower()
-        )
+    # create new request
+    request_data = UserRequest(
+        user_id,
+        request.json.get("title").lower(),
+        request.json.get("description").lower(),
+        request.json.get("_type").lower(),
+        request.json.get("category").lower(),
+        request.json.get("area").lower()
+    )
 
     if request_data is not None:
         new_request = request_data.create_request()
