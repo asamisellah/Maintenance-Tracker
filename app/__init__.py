@@ -1,168 +1,312 @@
-from flask import Flask, jsonify, request
-import uuid
+from flask import Flask, jsonify, request, render_template
+from psycopg2.extras import RealDictCursor
+from .model import *
+import os
+import re
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    get_jwt_identity
+)
+from config import config
 
 app = Flask(__name__)
-
-requests = []
-users = []
-session = {}
-
-
-# GET users
-@app.route('/api/v1/users')
-def get_users():
-    return jsonify({"users": users})
+RUN_MODE = os.getenv('APP_SETTINGS') if os.getenv(
+    'APP_SETTINGS') else 'development'
+app.config.from_object(config[RUN_MODE])
+jwt = JWTManager(app)
+db.init_app(app)
 
 
+@app.route("/")
+def index():
+    return render_template("index.html")
 # POST a user
-@app.route('/api/v1/users', methods=['POST'])
+
+
+@app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
-    new_user = {
-        "user_id": str(uuid.uuid4()),
-        "username": request.json.get("username", "username"),
-        "email": request.json.get('email'),
-        "password": request.json.get("password")
-    }
-    print(new_user)
-    # Confirm user input has data
-    for key in new_user:
-        if new_user[key] == "":
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is valid
+        if key is None:
+            return jsonify({"message": "Invalid"}), 400
+        # Ensure input contains data
+        elif request.json[key] == "":
             return jsonify({"message": "All Fields Required"}), 400
+        # Ensure input data is a string
+        elif type(request.json[key]) != str:
+            return jsonify({"message": "Input Must be a String"}), 400
+        # Ensure string is not whitespace
+        elif request.json[key].strip() == "":
+            print(request.json[key])
+            return jsonify({"message": "Input Must be Valid Data"}), 400
+    match = re.search(r'\w+@\w+', request.json.get("email"))
+    if match is None:
+        return jsonify({"message": "Invalid email address"}), 400
+    new_user = User(
+        request.json.get("username").lower(),
+        request.json.get("email").lower(),
+        request.json.get("password")
+    )
     # Confirm password
-    if request.json.get("password") != request.json.get("confirm_password"):
+    if new_user.password != request.json.get("confirm_password"):
         return jsonify({"message": "Your Passwords Don't Match"}), 400
-    for user in users:
-        if user["username"] == new_user["username"]:
-            return jsonify({"message": "User already exists"}), 400
-    users.append(new_user)
+    # Check if user already exists
+    users = get_users()
+
+    if len(users) != 0:
+        for user in users:
+            if user["username"] == new_user.username:
+                return jsonify({"message": "User already exists"}), 400
+    new_user.create_user()
     return jsonify({"message": "Sign Up Successful"}), 201
 
 
 # Sign in a user
-@app.route('/api/v1/users/signin', methods=['POST'])
+@app.route('/api/v1/auth/login', methods=['POST'])
 def signin_user():
-    username = request.json.get("username")
-    password = request.json.get("password")
-    current_user = []
-
-    for user in users:
-        if user["username"] == username:
-            current_user.append(user)
-    if len(current_user) != 0:
-        if current_user[0]["password"] == password:
-            """Create user session"""
-            session["user_id"] = current_user[0]["user_id"]
-            return jsonify({"message": "Sign in Successful!"}), 202
-        else:
-            return jsonify({"message": "Wrong username or password"}), 401
-    return jsonify({"message": "User Not Found"}), 404
-
-
-# Sign out User
-@app.route('/api/v1/users/signout', methods=['POST'])
-def signout_user():
-    """Check if session is empty"""
-    if len(session) == 0:
-        return jsonify({"message": "You must be Signed in to Sign out"}), 403
-    session.pop("user_id", None)
-    return jsonify({"message": "Sign out Successful"}), 200
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is not empty
+        if key == "":
+            return jsonify({"message": "Invalid format"}), 400
+    # Get input
+    _username = request.json.get("username").lower()
+    _password = request.json.get("password")
+    # Confirm user exists
+    user = get_user(_username)
+    if user is not None:
+        # Validate user credentials
+        if user["username"] == _username and verify_hash(_password, user["password"]):
+            # Login user and generate Access Token
+            access_token = create_access_token(identity=user["id"])
+            return jsonify({
+                "message": "Sign in Successful!", "token": access_token}), 202
+        return jsonify({"message": "Wrong username or password"}), 401
+    return jsonify({"message":
+                    "User Not Found. Create an Account to Sign In"}), 404
 
 
 # POST a request
 @app.route('/api/v1/users/requests', methods=['POST'])
+@jwt_required
 def create_request():
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = {
-            "id": str(uuid.uuid4()),
-            "user_id": user_id,
-            "title": request.json.get("title"),
-            "type": request.json.get('type'),
-            "description": request.json.get("description"),
-            "category": request.json.get('category'),
-            "area": request.json.get('area')
-        }
-        requests.append(request_data)
-        return jsonify({"message": request_data}), 201
-    return jsonify({"message": "Sign In to view requests"}), 401
+    # pass user_id from token
+    user_id = get_jwt_identity()
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is not empty
+        if key == "":
+            return jsonify({"message": "Invalid format"}), 400
+        # Ensure input contains data
+        elif request.json[key] == "":
+            return jsonify({"message": "All Fields Required"}), 400
+        # Ensure input data is a string
+        elif type(request.json[key]) != str:
+            return jsonify({"message": "Input Must be a String"}), 400
+        # Ensure string is not whitespace
+        elif request.json[key].strip() == "":
+            print(request.json[key])
+            return jsonify({"message": "Input Must be Valid Data"}), 400
+
+    # create new request
+    request_data = UserRequest(
+        user_id,
+        request.json.get("title").lower(),
+        request.json.get("description").lower(),
+        request.json.get("_type").lower(),
+        request.json.get("category").lower(),
+        request.json.get("area").lower()
+    )
+
+    if request_data is not None:
+        new_request = request_data.create_request()
+        return jsonify({"message": "Request Created Successfully"}), 201
+    return jsonify({"message": "Invalid input"}), 400
 
 
-# GET all requests
+# GET all requests of logged in user
 @app.route('/api/v1/users/requests')
-def get_requests():
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for request in requests:
-            if request["user_id"] == user_id:
-                request_data.append(request)
-        if len(request_data) == 0:
-            return jsonify({
-                "message": "You have no requests. Create a request"
-            }), 200
-        return jsonify({"requests": request_data}), 200
-    return jsonify({"message": "Sign In to view requests"}), 403
+@jwt_required
+def user_get_requests():
+    user_id = get_jwt_identity()
+    requests = get_user_requests(user_id)
+    # Check if request exists
+    if len(requests) == 0:
+        return jsonify({
+            "message": "You have no requests. Create a request"
+        }), 404
+    # Return if exists
+    return jsonify({"requests": requests}), 200
 
 
-# GET a request
+# GET a request of logged in user
 @app.route('/api/v1/users/requests/<request_id>')
-def get_request(request_id):
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for request in requests:
-            if request["id"] == request_id:
-                request_data.append(request)
-        if not request_data:
-            return jsonify({"message": "Not found"}), 404
-
-        if request_data[0]["user_id"] == user_id:
-            if len(request_data) != 0:
-                return jsonify({"request": request_data[0]}), 200
-    return jsonify({"message": "Sign In to view requests"}), 403
+@jwt_required
+def user_get_request(request_id):
+    user_id = get_jwt_identity()
+    user_request = get_user_request(request_id, user_id)
+    if user_request is not None:
+        return jsonify({"request": user_request}), 200
+    return jsonify({
+        "message": "Request Not Found"}), 404
 
 
 # UPDATE(PUT) a request
 @app.route('/api/v1/users/requests/<request_id>', methods=['PUT'])
-def update_request(request_id):
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for r in requests:
-            if r["id"] == request_id:
-                request_data.append(r)
-        if request_data[0]["user_id"] == user_id:
-            if len(request_data) != 0:
-                request_data[0]["title"] = request.json.get(
-                    "title", request_data[0]["title"])
-                request_data[0]["type"] = request.json.get(
-                    "type", request_data[0]["type"])
-                request_data[0]["description"] = request.json.get(
-                    "description", request_data[0]["description"])
-                request_data[0]["category"] = request.json.get(
-                    "category", request_data[0]["category"])
-                request_data[0]["area"] = request.json.get(
-                    "area", request_data[0]["area"])
+@jwt_required
+def user_update_request(request_id):
+    user_id = get_jwt_identity()
+    user_request = get_user_request(request_id, user_id)
 
-                return jsonify({"requests": request_data[0]}), 200
-            return jsonify({"message": "Request Not Found"}), 404
-        return jsonify({"message": "Cannot Access Request"}), 403
-    return jsonify({"message": "Sign In to view requests"}), 403
+    # Ensure input is in json format
+    if not request.is_json:
+        return jsonify({"message": "Missing JSON in request"}), 400
+    for key in request.json:
+        # Ensure key is not empty
+        if key == "":
+            return jsonify({"message": "Invalid format"}), 400
+        # Ensure input contains data
+        if request.json[key] == "":
+            return jsonify({"message": "All Fields Required"}), 400
+        # Ensure input data is a string
+        elif type(request.json[key]) != str:
+            return jsonify({"message": "Input Must be a String"}), 400
+        # Ensure string is not whitespace
+        elif request.json[key].strip() == "":
+            print(request.json[key])
+            return jsonify({"message": "Input Must be Valid Data"}), 400
+
+    # Ensure request has been fetched
+    if user_request is not None:
+        if user_request["status"] == "pending":
+            update_request(request_id,
+                           user_id,
+                           request.json.get("title").lower(),
+                           request.json.get("description").lower(),
+                           request.json.get("_type").lower(),
+                           request.json.get("category").lower(),
+                           request.json.get("area").lower()
+                           )
+            return jsonify({"message": "Request Updated Successfully",
+                            "data": user_request}), 200
+        return jsonify({"message":
+                        "Cannot Update, Your Request is Already {}".
+                        format(user_request["status"])}), 400
+    return jsonify({"message": "Request Not Found"}), 404
 
 
 # DELETE a request
 @app.route('/api/v1/users/requests/<request_id>', methods=['DELETE'])
-def delete_request(request_id):
-    if len(session) != 0:
-        user_id = session["user_id"]
-        request_data = []
-        for request in requests:
-            if request["id"] == request_id:
-                request_data.append(request)
-        if request_data[0]["user_id"] == user_id:
-            if len(request_data) != 0:
-                requests.remove(request_data[0])
-                return jsonify({"requests": "Request Successfully Deleted"}), 200
-            return jsonify({"message": "Not Found"}), 404
-        return jsonify({"message": "Cannot Access Request"}), 403
-    return jsonify({"message": "Sign In to view requests"}), 403
+@jwt_required
+def user_delete_request(request_id):
+    user_id = get_jwt_identity()
+    user_request = get_user_request(request_id, user_id)
+    print(user_request)
+    if user_request is not None:
+        delete_request(request_id, user_id)
+        return jsonify({"message": "Request Deleted Successfully"}), 200
+    return jsonify({"message": "Request Not Found"}), 404
+
+
+# Admin Priviledges
+
+
+# Admin GET all requests
+@app.route('/api/v1/requests')
+@jwt_required
+def get_requests():
+
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    print(user)
+    # Check if user exists
+    if len(user) != 0:
+            # Check if user is admin
+        if user["admin_role"] is True:
+            all_requests = get_all_requests()
+            # Check if requests contains data
+            if len(all_requests) != 0:
+                return jsonify({"requests": all_requests}), 200
+            return jsonify({"message": "No requests to display"}), 404
+        return jsonify({"message": "Sorry, Only Admin can Access"}), 403
+    return jsonify({"message": "User Not Found. Sign up to create an account"}), 404
+
+
+# Admin Approve Requests
+@app.route('/api/v1/requests/<request_id>/approve', methods=['PUT'])
+@jwt_required
+def approve_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+            # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            # Check request status
+            if user_request["status"] == "pending":
+                return jsonify({
+                    "message": "Request Successfully {}".
+                    format(update_status(request_id, "approved"))}), 200
+            return jsonify({"message":
+                            "Failed, The request has been {}".format(
+                                user_request["status"])
+                            }), 400
+        return jsonify({"message": "Sorry, Only Admin can Access"}), 403
+    return jsonify({
+        "message": "User Not Found. Sign up to create an account"}), 404
+
+
+# Admin Disapprove Requests
+@app.route('/api/v1/requests/<request_id>/disapprove', methods=['PUT'])
+@jwt_required
+def disapprove_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+            # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            # Check request status
+            if user_request["status"] == "pending":
+                return jsonify({
+                    "message": update_status(request_id, "diapproved")}), 200
+            return jsonify({"message":
+                            "The request has been {}".format(
+                                user_request["status"])
+                            }), 400
+        return jsonify({"message": "Sorry, Only Admin can Access"}), 403
+    return jsonify({
+        "message": "User Not Found. Sign up to create an account"}), 404
+
+
+# Admin Resolve Requests
+@app.route('/api/v1/requests/<request_id>/resolve', methods=['PUT'])
+@jwt_required
+def resolve_request(request_id):
+    user_id = get_jwt_identity()
+    user = get_user_by_id(user_id)
+    # Check if user exists
+    if len(user) != 0:
+        # Check if user is admin
+        if user["admin_role"] is True:
+            user_request = get_request(request_id)
+            # Check request status
+            if user_request["status"] == "approved":
+                return jsonify({
+                    "message": update_status(request_id, "resolved")}), 200
+            return jsonify({"message":
+                            "The request has been {}".format(
+                                user_request["status"])
+                            }), 400
+        return jsonify({"message": "Sorry, Can't Grant You Access"}), 403
+    return jsonify({
+        "message": "User Not Found. Sign up to create an account"}), 404
