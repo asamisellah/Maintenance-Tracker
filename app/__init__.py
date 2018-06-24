@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from psycopg2.extras import RealDictCursor
+from flask_cors import CORS
 from .model import *
 import os
 import re
@@ -10,6 +11,7 @@ from flask_jwt_extended import (
 from config import config
 
 app = Flask(__name__)
+CORS(app)
 RUN_MODE = os.getenv('APP_SETTINGS') if os.getenv(
     'APP_SETTINGS') else 'development'
 app.config.from_object(config[RUN_MODE])
@@ -127,7 +129,7 @@ def create_request():
 
     if request_data is not None:
         new_request = request_data.create_request()
-        return jsonify({"message": "Request Created Successfully"}), 201
+        return jsonify({"data": new_request}), 201
     return jsonify({"message": "Invalid input"}), 400
 
 

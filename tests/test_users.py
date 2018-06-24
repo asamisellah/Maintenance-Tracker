@@ -50,7 +50,6 @@ class TestUsers(unittest.TestCase):
             data=json.dumps(dict(self.data["user"])),
             content_type='application/json'
         )
-        self.assertEqual(res.status_code, 201)
 
         res = self.client.post(
             '/api/v1/auth/login',
