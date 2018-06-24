@@ -12,7 +12,7 @@ services:
 
 before_script:
   - psql -c "CREATE DATABASE mtracker_test;" -U postgres
-  - psql -c "CREATE USER postgres WITH PASSWORD 'testdb';" -U postgres
+  - psql -c "CREATE USER tests WITH PASSWORD 'testdb';" -U postgres
 
 
 script:
