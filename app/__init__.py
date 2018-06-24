@@ -127,7 +127,7 @@ def create_request():
 
     if request_data is not None:
         new_request = request_data.create_request()
-        return jsonify({"message": "Request Created Successfully"}), 201
+        return jsonify({"message": new_request}), 201
     return jsonify({"message": "Invalid input"}), 400
 
 
