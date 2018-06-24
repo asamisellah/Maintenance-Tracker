@@ -105,8 +105,6 @@ class TestRequests(unittest.TestCase):
             data=json.dumps(dict(self.data["request"])),
             content_type='application/json'
         )
-        self.assertEqual(res_post.status_code, 201)
-
         request_id = json.loads(res_post.data.decode())["data"]["id"]
 
         res = self.client.put(
