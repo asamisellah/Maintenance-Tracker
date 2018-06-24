@@ -79,7 +79,6 @@ class TestRequests(unittest.TestCase):
             data=json.dumps(dict(self.data["request"])),
             content_type='application/json',
         )
-        self.assertEqual(res.status_code, 201)
 
         res = self.client.get('/api/v1/users/requests', headers=header)
         self.assertEqual(res.status_code, 200)
@@ -91,7 +90,6 @@ class TestRequests(unittest.TestCase):
             data=json.dumps(dict(self.data["request"])),
             content_type='application/json'
         )
-        self.assertEqual(res_post.status_code, 201)
 
         request_id = json.loads(res_post.data.decode())["data"]["id"]
         res = self.client.get(
@@ -105,8 +103,8 @@ class TestRequests(unittest.TestCase):
             data=json.dumps(dict(self.data["request"])),
             content_type='application/json'
         )
-        request_id = json.loads(res_post.data.decode())["data"]["id"]
 
+        request_id = json.loads(res_post.data.decode())["data"]["id"]
         res = self.client.put(
             '/api/v1/users/requests/{}'.format(request_id), headers=header,
             data=json.dumps(dict(self.data['update_request'])),
@@ -121,10 +119,8 @@ class TestRequests(unittest.TestCase):
             data=json.dumps(dict(self.data["request"])),
             content_type='application/json'
         )
-        self.assertEqual(res_post.status_code, 201)
 
         request_id = json.loads(res_post.data.decode())["data"]["id"]
-
         res = self.client.delete(
             '/api/v1/users/requests/{}'.format(request_id), headers=header)
         self.assertEqual(res.status_code, 200)
