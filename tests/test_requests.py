@@ -2,7 +2,7 @@ from app import app
 import unittest
 import json
 from config import config
-from app.model import drop, init, db, make_user_admin, update_status
+from app.model import drop, init, db
 
 
 class TestRequests(unittest.TestCase):
@@ -26,6 +26,13 @@ class TestRequests(unittest.TestCase):
             },
             "request": {
                 "title": "Leaking Pipe",
+                "_type": "Repair",
+                "description": "Some description",
+                "category": "Plumbing",
+                "area": "Block A"
+            },
+            "update_request": {
+                "title": "MakeMe",
                 "_type": "Repair",
                 "description": "Some description",
                 "category": "Plumbing",
@@ -56,63 +63,69 @@ class TestRequests(unittest.TestCase):
         }
         return headers
 
-    def test_approve_request(self):
+    def test_create_request(self):
         header = self.signup_and_signin_user()
-        res_post = self.client.post(
+        res = self.client.post(
             '/api/v1/users/requests', headers=header,
             data=json.dumps(dict(self.data["request"])),
             content_type='application/json',
         )
-        self.assertEqual(res_post.status_code, 201)
-        request_id = json.loads(res_post.data.decode())["data"]["id"]
-        make_user_admin()
+        self.assertEqual(res.status_code, 201)
 
-        res = self.client.put(
-            '/api/v1/requests/{}/approve'.format(request_id), headers=header)
+    def test_get_requests(self):
+        header = self.signup_and_signin_user()
+        res = self.client.post(
+            '/api/v1/users/requests', headers=header,
+            data=json.dumps(dict(self.data["request"])),
+            content_type='application/json',
+        )
+
+        res = self.client.get('/api/v1/users/requests', headers=header)
         self.assertEqual(res.status_code, 200)
 
-    def test_disapprove_request(self):
+    def test_get_request(self):
         header = self.signup_and_signin_user()
         res_post = self.client.post(
             '/api/v1/users/requests', headers=header,
             data=json.dumps(dict(self.data["request"])),
-            content_type='application/json',
+            content_type='application/json'
         )
-        self.assertEqual(res_post.status_code, 201)
+
         request_id = json.loads(res_post.data.decode())["data"]["id"]
-        make_user_admin()
-
-        res = self.client.put(
-            '/api/v1/requests/{}/disapprove'.format(request_id),
-            headers=header)
-        self.assertEqual(res.status_code, 200)
-
-    def test_resolve_request(self):
-        header = self.signup_and_signin_user()
-        res_post = self.client.post(
-            '/api/v1/users/requests', headers=header,
-            data=json.dumps(dict(self.data["request"])),
-            content_type='application/json',
-        )
-        self.assertEqual(res_post.status_code, 201)
-        request_id = json.loads(res_post.data.decode())["data"]["id"]
-        make_user_admin()
-
-        update_status(1, "approved")
-        res = self.client.put(
-            '/api/v1/requests/{}/resolve'.format(request_id), headers=header)
-        self.assertEqual(res.status_code, 200)
-
-    def test_get_all_request(self):
-        header = self.signup_and_signin_user()
-        res_post = self.client.post(
-            '/api/v1/users/requests', headers=header,
-            data=json.dumps(dict(self.data["request"])),
-            content_type='application/json',
-        )
-        self.assertEqual(res_post.status_code, 201)
-        make_user_admin()
-
         res = self.client.get(
-            '/api/v1/requests', headers=header)
+            '/api/v1/users/requests/{}'.format(request_id), headers=header)
         self.assertEqual(res.status_code, 200)
+
+    def test_update_request(self):
+        header = self.signup_and_signin_user()
+        res_post = self.client.post(
+            '/api/v1/users/requests', headers=header,
+            data=json.dumps(dict(self.data["request"])),
+            content_type='application/json'
+        )
+
+        request_id = json.loads(res_post.data.decode())["data"]["id"]
+        res = self.client.put(
+            '/api/v1/users/requests/{}'.format(request_id), headers=header,
+            data=json.dumps(dict(self.data['update_request'])),
+            content_type='application/json')
+
+        self.assertEqual(res.status_code, 200)
+
+    def test_delete_request(self):
+        header = self.signup_and_signin_user()
+        res_post = self.client.post(
+            '/api/v1/users/requests', headers=header,
+            data=json.dumps(dict(self.data["request"])),
+            content_type='application/json'
+        )
+
+        request_id = json.loads(res_post.data.decode())["data"]["id"]
+        res = self.client.delete(
+            '/api/v1/users/requests/{}'.format(request_id), headers=header)
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_request_not_in_db(self):
+        header = self.signup_and_signin_user()
+        res = self.client.get('/api/v1/users/requests/0', headers=header)
+        self.assertEqual(res.status_code, 404)
