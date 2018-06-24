@@ -13,6 +13,11 @@ services:
 before_script:
   - psql -c "CREATE DATABASE mtracker_test;" -U postgres
 
+env:
+  global:
+    - DB_NAME= mtracker_test
+    - DB_USER=postgres
+
 script:
   - nosetests --with-coverage  --cover-package=app && coverage report
 
