@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request, render_template
 from psycopg2.extras import RealDictCursor
+from flask_cors import CORS
 from .model import *
 import os
 import re
@@ -10,6 +11,7 @@ from flask_jwt_extended import (
 from config import config
 
 app = Flask(__name__)
+CORS(app)
 RUN_MODE = os.getenv('APP_SETTINGS') if os.getenv(
     'APP_SETTINGS') else 'development'
 app.config.from_object(config[RUN_MODE])
