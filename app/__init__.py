@@ -11,12 +11,12 @@ from flask_jwt_extended import (
 from config import config
 
 app = Flask(__name__)
-CORS(app)
 RUN_MODE = os.getenv('APP_SETTINGS') if os.getenv(
     'APP_SETTINGS') else 'development'
 app.config.from_object(config[RUN_MODE])
 jwt = JWTManager(app)
 db.init_app(app)
+CORS(app)
 
 
 @app.route("/")
@@ -27,43 +27,46 @@ def index():
 
 @app.route('/api/v1/auth/signup', methods=['POST'])
 def create_user():
-    # Ensure input is in json format
-    if not request.is_json:
-        return jsonify({"message": "Missing JSON in request"}), 400
-    for key in request.json:
-        # Ensure key is valid
-        if key is None:
-            return jsonify({"message": "Invalid"}), 400
-        # Ensure input contains data
-        elif request.json[key] == "":
-            return jsonify({"message": "All Fields Required"}), 400
-        # Ensure input data is a string
-        elif type(request.json[key]) != str:
-            return jsonify({"message": "Input Must be a String"}), 400
-        # Ensure string is not whitespace
-        elif request.json[key].strip() == "":
-            print(request.json[key])
-            return jsonify({"message": "Input Must be Valid Data"}), 400
-    match = re.search(r'\w+@\w+', request.json.get("email"))
-    if match is None:
-        return jsonify({"message": "Invalid email address"}), 400
-    new_user = User(
-        request.json.get("username").lower(),
-        request.json.get("email").lower(),
-        request.json.get("password")
-    )
-    # Confirm password
-    if new_user.password != request.json.get("confirm_password"):
-        return jsonify({"message": "Your Passwords Don't Match"}), 400
-    # Check if user already exists
-    users = get_users()
+    try:
+        # Ensure input is in json format
+        if not request.is_json:
+            return jsonify({"message": "Missing JSON in request"}), 400
+        for key in request.json:
+            # Ensure key is valid
+            if key is None:
+                return jsonify({"message": "Invalid"}), 400
+            # Ensure input contains data
+            elif request.json[key] == "":
+                return jsonify({"message": "All Fields Required"}), 400
+            # Ensure input data is a string
+            elif type(request.json[key]) != str:
+                return jsonify({"message": "Input Must be a String"}), 400
+            # Ensure string is not whitespace
+            elif request.json[key].strip() == "":
+                print(request.json[key])
+                return jsonify({"message": "Input Must be Valid Data"}), 400
+        match = re.search(r'\w+@\w+', request.json.get("email"))
+        if match is None:
+            return jsonify({"message": "Invalid email address"}), 400
+        new_user = User(
+            request.json.get("username").lower(),
+            request.json.get("email").lower(),
+            request.json.get("password")
+        )
+        # Confirm password
+        if new_user.password != request.json.get("confirm_password"):
+            return jsonify({"message": "Your Passwords Don't Match"}), 400
+        # Check if user already exists
+        users = get_users()
 
-    if len(users) != 0:
-        for user in users:
-            if user["username"] == new_user.username:
-                return jsonify({"message": "User already exists"}), 400
-    new_user.create_user()
-    return jsonify({"message": "Sign Up Successful"}), 201
+        if len(users) != 0:
+            for user in users:
+                if user["username"] == new_user.username:
+                    return jsonify({"message": "User already exists"}), 400
+        new_user.create_user()
+        return jsonify({"message": "Sign Up Successful"}), 201
+    except:
+        return jsonify({"message": "Not allowed"})
 
 
 # Sign in a user
@@ -129,7 +132,8 @@ def create_request():
 
     if request_data is not None:
         new_request = request_data.create_request()
-        return jsonify({"data": new_request}), 201
+        return jsonify({"message": "Request Created Successfully",
+                        "data": new_request}), 201
     return jsonify({"message": "Invalid input"}), 400
 
 
